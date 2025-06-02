@@ -163,24 +163,24 @@
     <button class="tower-btn" id="speedTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Turbo Snail 🏎️</strong><br>
+          <strong>Turbo Snail 🐌</strong><br>
           <small>Lightning-fast rapid fire</small>
         </div>
         <div style="text-align: right;">
-          <div>💰 40 🥬</div>
+          <div>💰 50 🥬</div>
         </div>
       </div>
       <div class="tower-stats">
-        <span>⚔️ 18 DMG</span>
+        <span>⚔️ 15 DMG</span>
         <span>🎯 75 Range</span>
-        <span>⚡ 3.5 Speed</span>
+        <span>⚡ 2 Speed</span>
       </div>
     </button>
 
     <button class="tower-btn" id="splashTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Slime Bomber 🟢</strong><br>
+          <strong>Slime Bomber 🐌</strong><br>
           <small>Explosive area damage</small>
         </div>
         <div style="text-align: right;">
@@ -197,7 +197,7 @@
     <button class="tower-btn" id="slowTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Frost Shell 🧊</strong><br>
+          <strong>Frost Shell 🐌</strong><br>
           <small>Freezing crowd control</small>
         </div>
         <div style="text-align: right;">
@@ -214,24 +214,24 @@
     <button class="tower-btn" id="laserTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Prism Snail 🌈</strong><br>
+          <strong>Prism Snail 🐌</strong><br>
           <small>Piercing laser beam</small>
         </div>
         <div style="text-align: right;">
-          <div>💰 190 🥬</div>
+          <div>💰 5500 🥬</div>
         </div>
       </div>
       <div class="tower-stats">
-        <span>⚔️ 40 DMG</span>
-        <span>🎯 120 Range</span>
-        <span>⚡ 1.5 Speed</span>
+        <span>⚔️ 100 DMG</span>
+        <span>🎯 250 Range</span>
+        <span>⚡ 3 Speed</span>
       </div>
     </button>
 
     <button class="tower-btn" id="poisonTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Toxic Spiral 💚</strong><br>
+          <strong>Toxic Spiral 🐌</strong><br>
           <small>Damage over time</small>
         </div>
         <div style="text-align: right;">
@@ -306,7 +306,7 @@
       projectileColor: '#8B4513', effect: 'basic'
     },
     speed: { 
-      cost: 40, damage: 18, range: 75, speed: 3.5, emoji: '🏎️', 
+      cost: 50, damage: 15, range: 75, speed: 2, emoji: '🏎️', 
       color: '#ff4444', bgColor: '#cc3333', name: 'Turbo Snail',
       projectileColor: '#ff6666', effect: 'basic'
     },
@@ -321,7 +321,7 @@
       projectileColor: '#66ffff', effect: 'slow'
     },
     laser: {
-      cost: 90, damage: 40, range: 120, speed: 1.5, emoji: '🌈',
+      cost: 5500, damage: 100, range: 250, speed: 3, emoji: '🌈',
       color: '#ff00ff', bgColor: '#cc00cc', name: 'Prism Snail',
       projectileColor: '#ff66ff', effect: 'pierce'
     },
@@ -334,16 +334,16 @@
   
   // Enhanced enemy types
   const enemyTypes = {
-    basic: { health: 60, speed: 1, reward: 6, emoji: '🐛', name: 'Garden Bug' },
-    fast: { health: 35, speed: 2.2, reward: 9, emoji: '🐜', name: 'Speed Ant' },
-    tank: { health: 150, speed: 0.6, reward: 15, emoji: '🪲', name: 'Armored Beetle' },
-    boss: { health: 400, speed: 0.8, reward: 30, emoji: '🦂', name: 'Scorpion Boss' },
-    flying: { health: 45, speed: 1.8, reward: 11, emoji: '🦟', name: 'Buzz Mosquito' },
-    worm: { health: 100, speed: 0.9, reward: 14, emoji: '🪱', name: 'Earth Worm' },
-    spider: { health: 80, speed: 1.4, reward: 13, emoji: '🕷️', name: 'Web Spider' },
-    mega: { health: 800, speed: 0.5, reward: 75, emoji: '🐉', name: 'Mega Dragon' },
-    swarm: { health: 25, speed: 2.5, reward: 4, emoji: '🦗', name: 'Swarm Locust' },
-    shield: { health: 120, speed: 1.1, reward: 18, emoji: '🛡️', name: 'Shield Bug' }
+    basic: { health: 60, speed: 1, reward: 5, emoji: '🐛', name: 'Garden Bug' },
+    fast: { health: 35, speed: 2.2, reward: 7, emoji: '🐜', name: 'Speed Ant' },
+    tank: { health: 150, speed: 0.6, reward: 10, emoji: '🪲', name: 'Armored Beetle' },
+    boss: { health: 400, speed: 0.8, reward: 25, emoji: '🦂', name: 'Scorpion Boss' },
+    flying: { health: 45, speed: 1.8, reward: 9, emoji: '🦟', name: 'Buzz Mosquito' },
+    worm: { health: 100, speed: 0.9, reward: 12, emoji: '🪱', name: 'Earth Worm' },
+    spider: { health: 80, speed: 1.4, reward: 11, emoji: '🕷️', name: 'Web Spider' },
+    mega: { health: 800, speed: 0.5, reward: 50, emoji: '🐉', name: 'Mega Dragon' },
+    swarm: { health: 25, speed: 2.5, reward: 3, emoji: '🦗', name: 'Swarm Locust' },
+    shield: { health: 120, speed: 1.1, reward: 16, emoji: '🛡️', name: 'Shield Bug' }
   };
   
   class Tower {
