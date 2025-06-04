@@ -131,7 +131,7 @@
     <div>Wave: <span id="wave">1</span> &nbsp;|&nbsp; Score: <span id="score">0</span> &nbsp;|&nbsp; Kills: <span id="kills">0</span></div>
   </div>
   <div>
-    <button id="startWaveBtn">🌊 Start Wave</button>
+    <button id="startWaveBtn">Start Wave</button>
     <button id="pauseBtn">⏸️ Pause</button>
     <button id="speedBtn">⚡ Speed: 1x</button>
     <button id="sellBtn">💰 Sell Mode</button>
@@ -301,32 +301,32 @@
   // Enhanced tower types with unique backgrounds
   const towerTypes = {
     basic: { 
-      cost: 25, damage: 30, range: 85, speed: 1.0, emoji: '🐌', 
+      cost: 25, damage: 30, range: 85, speed: 1.0, sprite: 'snail1.png', 
       color: '#8B4513', bgColor: '#654321', name: 'Garden Guardian',
       projectileColor: '#8B4513', effect: 'basic'
     },
     speed: { 
-      cost: 50, damage: 15, range: 75, speed: 2, emoji: '🐌', 
+      cost: 50, damage: 15, range: 75, speed: 2, sprite: 'turbosnail.png', 
       color: '#ff4444', bgColor: '#cc3333', name: 'Turbo Snail',
       projectileColor: '#ff6666', effect: 'basic'
     },
     splash: { 
-      cost: 70, damage: 50, range: 95, speed: 0.8, emoji: '🐌', 
+      cost: 70, damage: 50, range: 95, speed: 0.8, sprite: 'slimesnail.png', 
       color: '#00ff00', bgColor: '#00cc00', name: 'Slime Bomber',
       projectileColor: '#66ff66', effect: 'splash'
     },
     slow: { 
-      cost: 55, damage: 25, range: 90, speed: 1.3, emoji: '🐌', 
+      cost: 55, damage: 25, range: 90, speed: 1.3, sprite: 'frostsnail.png', 
       color: '#00ffff', bgColor: '#00cccc', name: 'Frost Shell',
       projectileColor: '#66ffff', effect: 'slow'
     },
     laser: {
-      cost: 5500, damage: 100, range: 250, speed: 3, emoji: '🐌',
+      cost: 5500, damage: 100, range: 250, speed: 3, sprite: 'prismsnail.png',
       color: '#ff00ff', bgColor: '#cc00cc', name: 'Prism Snail',
       projectileColor: '#ff66ff', effect: 'pierce'
     },
     poison: {
-      cost: 65, damage: 15, range: 80, speed: 1.2, emoji: '🐌',
+      cost: 65, damage: 15, range: 80, speed: 1.2, sprite: 'acidsnail.png',
       color: '#99ff99', bgColor: '#66cc66', name: 'Toxic Spiral',
       projectileColor: '#99ff99', effect: 'poison'
     }
