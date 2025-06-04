@@ -338,38 +338,57 @@ function loadSprites(towerTypes, onComplete) {
   const keys = Object.keys(towerTypes);
   let loaded = 0;
   const total = keys.length;
-
+  
+  if (total === 0) {
+    onComplete();
+    return;
+  }
+  
   keys.forEach(key => {
     const img = new Image();
     img.src = towerTypes[key].sprite;
+    
     img.onload = () => {
       images[key] = img;
+      loaded++;
+      console.log(`Loaded sprite: ${towerTypes[key].sprite} (${loaded}/${total})`);
+      if (loaded === total) {
+        onComplete();
+      }
+    };
+    
+    img.onerror = () => {
+      console.error('Sprite failed to load:', towerTypes[key].sprite);
+      images[key] = null; // Mark as failed but still count it
       loaded++;
       if (loaded === total) {
         onComplete();
       }
     };
-    img.onerror = () => {
-      console.error('sprite failed to load:', towerTypes[key].sprite);
-    };
   });
 }
 
-// usage example:
+// Usage example:
 loadSprites(towerTypes, () => {
-  console.log('all sprites loaded boss! ready to draw');
+  console.log('All sprites processed! Ready to draw');
   // start game or draw towers now
 });
 
-// draw function example
-function drawTower(ctx, towerType, x, y) {
+// Draw function example
+function drawTower(ctx, towerType, x, y, size = 40) {
   const img = images[towerType];
   if (img) {
-    ctx.drawImage(img, x, y);
+    ctx.drawImage(img, x, y, size, size);
   } else {
-    // fallback if image not loaded
-    ctx.fillStyle = 'magenta';
-    ctx.fillRect(x, y, 40, 40);
+    // Fallback if image failed to load - use tower's color
+    const tower = towerTypes[towerType];
+    ctx.fillStyle = tower ? tower.color : '#magenta';
+    ctx.fillRect(x, y, size, size);
+    
+    // Add a simple border
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, size, size);
   }
 }
   
