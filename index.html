@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Flumgus Tower Defense</title>
+<title>Enhanced Flumgus Snail Defense - Premium Lettuce Farm Protection</title>
 <style>
   body, html {
     margin:0; padding:0; overflow:hidden;
@@ -131,7 +131,7 @@
     <div>Wave: <span id="wave">1</span> &nbsp;|&nbsp; Score: <span id="score">0</span> &nbsp;|&nbsp; Kills: <span id="kills">0</span></div>
   </div>
   <div>
-    <button id="startWaveBtn">Start Wave</button>
+    <button id="startWaveBtn">🌊 Start Wave</button>
     <button id="pauseBtn">⏸️ Pause</button>
     <button id="speedBtn">⚡ Speed: 1x</button>
     <button id="sellBtn">💰 Sell Mode</button>
@@ -163,24 +163,24 @@
     <button class="tower-btn" id="speedTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Turbo Snail 🐌</strong><br>
+          <strong>Turbo Snail 🏎️</strong><br>
           <small>Lightning-fast rapid fire</small>
         </div>
         <div style="text-align: right;">
-          <div>💰 50 🥬</div>
+          <div>💰 40 🥬</div>
         </div>
       </div>
       <div class="tower-stats">
-        <span>⚔️ 15 DMG</span>
+        <span>⚔️ 18 DMG</span>
         <span>🎯 75 Range</span>
-        <span>⚡ 2 Speed</span>
+        <span>⚡ 3.5 Speed</span>
       </div>
     </button>
 
     <button class="tower-btn" id="splashTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Slime Bomber 🐌</strong><br>
+          <strong>Slime Bomber 🟢</strong><br>
           <small>Explosive area damage</small>
         </div>
         <div style="text-align: right;">
@@ -197,7 +197,7 @@
     <button class="tower-btn" id="slowTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Frost Shell 🐌</strong><br>
+          <strong>Frost Shell 🧊</strong><br>
           <small>Freezing crowd control</small>
         </div>
         <div style="text-align: right;">
@@ -214,24 +214,24 @@
     <button class="tower-btn" id="laserTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Prism Snail 🐌</strong><br>
+          <strong>Prism Snail 🌈</strong><br>
           <small>Piercing laser beam</small>
         </div>
         <div style="text-align: right;">
-          <div>💰 5500 🥬</div>
+          <div>💰 90 🥬</div>
         </div>
       </div>
       <div class="tower-stats">
-        <span>⚔️ 100 DMG</span>
-        <span>🎯 250 Range</span>
-        <span>⚡ 3 Speed</span>
+        <span>⚔️ 40 DMG</span>
+        <span>🎯 120 Range</span>
+        <span>⚡ 1.5 Speed</span>
       </div>
     </button>
 
     <button class="tower-btn" id="poisonTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <strong>Toxic Spiral 🐌</strong><br>
+          <strong>Toxic Spiral 💚</strong><br>
           <small>Damage over time</small>
         </div>
         <div style="text-align: right;">
@@ -269,7 +269,7 @@
   let gameRunning = false;
   let gamePaused = false;
   let gameSpeed = 1;
-  let money = 100;
+  let money = 120;
   let health = 25;
   let wave = 1;
   let score = 0;
@@ -299,111 +299,51 @@
   ];
   
   // Enhanced tower types with unique backgrounds
-const towerTypes = {
-  basic: { 
-    cost: 25, damage: 30, range: 85, speed: 1.0, <img src="snail1.png">, 
-    color: '#8B4513', bgColor: '#654321', name: 'Garden Guardian',
-    projectileColor: '#8B4513', effect: 'basic', emoji: '🐌'
-  },
-  speed: { 
-    cost: 50, damage: 15, range: 75, speed: 2, <img src="turbosnail.png", 
-    color: '#ff4444', bgColor: '#cc3333', name: 'Turbo Snail',
-    projectileColor: '#ff6666', effect: 'basic', emoji: '🐌'
-  },
-  splash: { 
-    cost: 70, damage: 50, range: 95, speed: 0.8, <img src="slimesnail.png">,
-    color: '#00ff00', bgColor: '#00cc00', name: 'Slime Bomber',
-    projectileColor: '#66ff66', effect: 'splash', emoji: '🐌'
-  },
-  slow: { 
-    cost: 55, damage: 25, range: 90, speed: 1.3, <img src="frostsnail.png">, 
-    color: '#00ffff', bgColor: '#00cccc', name: 'Frost Shell',
-    projectileColor: '#66ffff', effect: 'slow', emoji: '🐌'
-  },
-  laser: {
-    cost: 5500, damage: 100, range: 250, speed: 3, <img src=prismsnail.png">,
-    color: '#ff00ff', bgColor: '#cc00cc', name: 'Prism Snail',
-    projectileColor: '#ff66ff', effect: 'pierce', emoji: '🐌'
-  },
-  poison: {
-    cost: 65, damage: 15, range: 80, speed: 1.2, <img src="acidsnail.png">,
-    color: '#99ff99', bgColor: '#66cc66', name: 'Toxic Spiral',
-    projectileColor: '#99ff99', effect: 'poison', emoji: '🐌'
-  }
-};
-
-const images = {};
-
-function loadSprites(towerTypes, onComplete) {
-  const keys = Object.keys(towerTypes);
-  let loaded = 0;
-  const total = keys.length;
-  
-  if (total === 0) {
-    onComplete();
-    return;
-  }
-  
-  keys.forEach(key => {
-    const img = new Image();
-    img.src = towerTypes[key].sprite;
-    
-    img.onload = () => {
-      images[key] = img;
-      loaded++;
-      console.log(`Loaded sprite: ${towerTypes[key].sprite} (${loaded}/${total})`);
-      if (loaded === total) {
-        onComplete();
-      }
-    };
-    
-    img.onerror = () => {
-      console.error('Sprite failed to load:', towerTypes[key].sprite);
-      images[key] = null; // Mark as failed but still count it
-      loaded++;
-      if (loaded === total) {
-        onComplete();
-      }
-    };
-  });
-}
-
-// Usage example:
-loadSprites(towerTypes, () => {
-  console.log('All sprites processed! Ready to draw');
-  // start game or draw towers now
-});
-
-// Draw function example
-function drawTower(ctx, towerType, x, y, size = 40) {
-  const img = images[towerType];
-  if (img) {
-    ctx.drawImage(img, x, y, size, size);
-  } else {
-    // Fallback if image failed to load - use tower's color
-    const tower = towerTypes[towerType];
-    ctx.fillStyle = tower ? tower.color : '#magenta';
-    ctx.fillRect(x, y, size, size);
-    
-    // Add a simple border
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x, y, size, size);
-  }
-}
+  const towerTypes = {
+    basic: { 
+      cost: 25, damage: 30, range: 85, speed: 1.0, emoji: '🐌', 
+      color: '#8B4513', bgColor: '#654321', name: 'Garden Guardian',
+      projectileColor: '#8B4513', effect: 'basic'
+    },
+    speed: { 
+      cost: 40, damage: 18, range: 75, speed: 3.5, emoji: '🏎️', 
+      color: '#ff4444', bgColor: '#cc3333', name: 'Turbo Snail',
+      projectileColor: '#ff6666', effect: 'basic'
+    },
+    splash: { 
+      cost: 70, damage: 50, range: 95, speed: 0.8, emoji: '🟢', 
+      color: '#00ff00', bgColor: '#00cc00', name: 'Slime Bomber',
+      projectileColor: '#66ff66', effect: 'splash'
+    },
+    slow: { 
+      cost: 55, damage: 25, range: 90, speed: 1.3, emoji: '🧊', 
+      color: '#00ffff', bgColor: '#00cccc', name: 'Frost Shell',
+      projectileColor: '#66ffff', effect: 'slow'
+    },
+    laser: {
+      cost: 90, damage: 40, range: 120, speed: 1.5, emoji: '🌈',
+      color: '#ff00ff', bgColor: '#cc00cc', name: 'Prism Snail',
+      projectileColor: '#ff66ff', effect: 'pierce'
+    },
+    poison: {
+      cost: 65, damage: 15, range: 80, speed: 1.2, emoji: '💚',
+      color: '#99ff99', bgColor: '#66cc66', name: 'Toxic Spiral',
+      projectileColor: '#99ff99', effect: 'poison'
+    }
+  };
   
   // Enhanced enemy types
   const enemyTypes = {
-    basic: { health: 60, speed: 1, reward: 5, emoji: '🐛', name: 'Garden Bug' },
-    fast: { health: 35, speed: 2.2, reward: 7, emoji: '🐜', name: 'Speed Ant' },
-    tank: { health: 150, speed: 0.6, reward: 10, emoji: '🪲', name: 'Armored Beetle' },
-    boss: { health: 400, speed: 0.8, reward: 25, emoji: '🦂', name: 'Scorpion Boss' },
-    flying: { health: 45, speed: 1.8, reward: 9, emoji: '🦟', name: 'Buzz Mosquito' },
-    worm: { health: 100, speed: 0.9, reward: 12, emoji: '🪱', name: 'Earth Worm' },
-    spider: { health: 80, speed: 1.4, reward: 11, emoji: '🕷️', name: 'Web Spider' },
-    mega: { health: 800, speed: 0.5, reward: 50, emoji: '🐉', name: 'Mega Dragon' },
-    swarm: { health: 25, speed: 2.5, reward: 3, emoji: '🦗', name: 'Swarm Locust' },
-    shield: { health: 120, speed: 1.1, reward: 16, emoji: '🛡️', name: 'Shield Bug' }
+    basic: { health: 60, speed: 1, reward: 12, emoji: '🐛', name: 'Garden Bug' },
+    fast: { health: 35, speed: 2.2, reward: 18, emoji: '🐜', name: 'Speed Ant' },
+    tank: { health: 150, speed: 0.6, reward: 30, emoji: '🪲', name: 'Armored Beetle' },
+    boss: { health: 400, speed: 0.8, reward: 60, emoji: '🦂', name: 'Scorpion Boss' },
+    flying: { health: 45, speed: 1.8, reward: 22, emoji: '🦟', name: 'Buzz Mosquito' },
+    worm: { health: 100, speed: 0.9, reward: 28, emoji: '🪱', name: 'Earth Worm' },
+    spider: { health: 80, speed: 1.4, reward: 25, emoji: '🕷️', name: 'Web Spider' },
+    mega: { health: 800, speed: 0.5, reward: 150, emoji: '🐉', name: 'Mega Dragon' },
+    swarm: { health: 25, speed: 2.5, reward: 8, emoji: '🦗', name: 'Swarm Locust' },
+    shield: { health: 120, speed: 1.1, reward: 35, emoji: '🛡️', name: 'Shield Bug' }
   };
   
   class Tower {
@@ -545,7 +485,7 @@ function drawTower(ctx, towerType, x, y, size = 40) {
       ctx.font = (26 + this.level * 2) + 'px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(towerData.sprite, this.x, this.y - 2);
+      ctx.fillText(towerData.emoji, this.x, this.y - 2);
       
       // Draw level indicator
       if (this.level > 1) {
