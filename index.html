@@ -305,9 +305,9 @@ const path = [
   {x: 400, y: 300},
   {x: 400, y: 350},
   {x: 450, y: 350},
-  {x: 450, y: 150},
-  {x: 600, y: 150},
-  {x: 850, y: 150},
+  {x: 450, y: 200},
+  {x: 500, y: 150},
+  {x: 850, y: 100},
 ];
   
   // Enhanced tower types with unique backgrounds
@@ -478,7 +478,7 @@ const path = [
       
       ctx.fillStyle = gradient;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
       ctx.fill();
       
       // Border
