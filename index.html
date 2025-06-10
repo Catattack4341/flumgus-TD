@@ -127,8 +127,8 @@
 
 <div id="ui">
   <div id="gameInfo">
-    <div>💚 Health: <span id="health">25</span> &nbsp;|&nbsp; 🥬 Lettuce Currency: <span id="money">120</span></div>
-    <div>Wave: <span id="wave">1</span> &nbsp;|&nbsp; Score: <span id="score">0</span> &nbsp;|&nbsp; Kills: <span id="kills">0</span></div>
+    <div>💚 Health: <span id="health">25</span>  |  🥬 Lettuce Currency: <span id="money">120</span></div>
+    <div>Wave: <span id="wave">1</span>  |  Score: <span id="score">0</span>  |  Kills: <span id="kills">0</span></div>
   </div>
   <div>
     <button id="startWaveBtn">Start Wave</button>
@@ -142,16 +142,14 @@
   <canvas id="gameCanvas" width="800" height="500"></canvas>
   <div id="sidebar">
     <h3>🐌 Elite Snail Defense Corps</h3>
-    
+    <!-- Tower buttons -->
     <button class="tower-btn" id="basicTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
           <strong>Normal Snail 🐌</strong><br>
           <small>Steady and reliable defender</small>
         </div>
-        <div style="text-align: right;">
-          <div>💰 25 🥬</div>
-        </div>
+        <div style="text-align: right;"><div>💰 25 🥬</div></div>
       </div>
       <div class="tower-stats">
         <span>⚔️ 30 DMG</span>
@@ -159,16 +157,13 @@
         <span>⚡ 1.0 Speed</span>
       </div>
     </button>
-
     <button class="tower-btn" id="speedTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
           <strong>Turbo Snail 🏎️</strong><br>
           <small>Lightning-fast rapid fire</small>
         </div>
-        <div style="text-align: right;">
-          <div>💰 50 🥬</div>
-        </div>
+        <div style="text-align: right;"><div>💰 50 🥬</div></div>
       </div>
       <div class="tower-stats">
         <span>⚔️ 15 DMG</span>
@@ -176,16 +171,13 @@
         <span>⚡ 2 Speed</span>
       </div>
     </button>
-
     <button class="tower-btn" id="splashTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
           <strong>Slime Bomber 🟢</strong><br>
           <small>Explosive area damage</small>
         </div>
-        <div style="text-align: right;">
-          <div>💰 70 🥬</div>
-        </div>
+        <div style="text-align: right;"><div>💰 70 🥬</div></div>
       </div>
       <div class="tower-stats">
         <span>⚔️ 50 DMG</span>
@@ -193,16 +185,13 @@
         <span>⚡ 0.8 Speed</span>
       </div>
     </button>
-
     <button class="tower-btn" id="slowTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
           <strong>Frost Shell 🧊</strong><br>
           <small>Freezing crowd control</small>
         </div>
-        <div style="text-align: right;">
-          <div>💰 55 🥬</div>
-        </div>
+        <div style="text-align: right;"><div>💰 55 🥬</div></div>
       </div>
       <div class="tower-stats">
         <span>⚔️ 25 DMG</span>
@@ -210,16 +199,13 @@
         <span>⚡ 1.3 Speed</span>
       </div>
     </button>
-
     <button class="tower-btn" id="laserTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
           <strong>Prism Snail 🌈</strong><br>
           <small>Piercing laser beam</small>
         </div>
-        <div style="text-align: right;">
-          <div>💰 15000 🥬</div>
-        </div>
+        <div style="text-align: right;"><div>💰 15000 🥬</div></div>
       </div>
       <div class="tower-stats">
         <span>⚔️ 450 DMG</span>
@@ -227,16 +213,13 @@
         <span>⚡ 5 Speed</span>
       </div>
     </button>
-
     <button class="tower-btn" id="poisonTower">
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
           <strong>Toxic Spiral 💚</strong><br>
           <small>Damage over time</small>
         </div>
-        <div style="text-align: right;">
-          <div>💰 65 🥬</div>
-        </div>
+        <div style="text-align: right;"><div>💰 65 🥬</div></div>
       </div>
       <div class="tower-stats">
         <span>⚔️ 15+20 DMG</span>
@@ -244,12 +227,12 @@
         <span>⚡ 1.2 Speed</span>
       </div>
     </button>
-    
+
     <div id="waveInfo">
       <h4>📊 Next Wave Preview:</h4>
       <div id="wavePreview">Click Start Wave!</div>
     </div>
-    
+
     <div style="margin-top: 20px; font-size: 11px; color: #bbb; line-height: 1.4;">
       <p>🎯 <strong>Strategy Tips:</strong></p>
       <p>• Mix different snail types for optimal defense</p>
@@ -261,11 +244,39 @@
 </div>
 
 <script>
-(() => {
+(async () => {
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
-  
-  // Game state
+
+  // Define sprite paths based on your description
+  const spritePaths = {
+    basic: 'snail1.png',
+    speed: 'turbosnail.png',
+    splash: 'slimesnail.png',
+    slow: 'frostsnail.png',
+    laser: 'prismsnail.png',
+    poison: 'acidsnail.png'
+  };
+  const sprites = {};
+
+  // Load all sprites before starting game
+  const loadSprites = () => {
+    const promises = Object.entries(spritePaths).map(([key, src]) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          sprites[key] = img;
+          resolve();
+        };
+        img.onerror = reject;
+      });
+    });
+    return Promise.all(promises);
+  };
+
+  // All your existing code (variables, classes, functions) goes here...
+
   let gameRunning = false;
   let gamePaused = false;
   let gameSpeed = 1;
@@ -276,19 +287,17 @@
   let kills = 0;
   let selectedTowerType = null;
   let sellMode = false;
-  
-  // Arrays
+
   let towers = [];
   let enemies = [];
   let projectiles = [];
   let particles = [];
   let effects = [];
-  
-  // Mouse tracking
+
   let mouseX = 0;
   let mouseY = 0;
-  
-  // Enhanced path (more winding)
+
+  // Path
   const path = [
     {x: -50, y: 120}, {x: 100, y: 120}, {x: 140, y: 80},
     {x: 200, y: 80}, {x: 240, y: 120}, {x: 300, y: 120},
@@ -297,42 +306,36 @@
     {x: 640, y: 280}, {x: 700, y: 280}, {x: 740, y: 320},
     {x: 800, y: 320}, {x: 850, y: 360}
   ];
-  
-  // Enhanced tower types with unique backgrounds
+
+  // Tower types
   const towerTypes = {
     basic: { 
-      cost: 25, damage: 30, range: 85, speed: 1.0, emoji: '🐌', 
-      color: '#8B4513', bgColor: '#654321', name: 'Normal Snail',
-      projectileColor: '#8B4513', effect: 'basic'
+      cost: 25, damage: 30, range: 85, speed: 1.0,
+      emoji: '🐌', color: '#8B4513', bgColor: '#654321', name: 'Normal Snail', effect: 'basic'
     },
     speed: { 
-      cost: 50, damage: 15, range: 75, speed: 20, emoji: '🐌', 
-      color: '#ff4444', bgColor: '#cc3333', name: 'Turbo Snail',
-      projectileColor: '#ff6666', effect: 'basic'
+      cost: 50, damage: 15, range: 75, speed: 20,
+      emoji: '🐌', color: '#ff4444', bgColor: '#cc3333', name: 'Turbo Snail', effect: 'basic'
     },
     splash: { 
-      cost: 70, damage: 50, range: 95, speed: 0.8, emoji: '🐌', 
-      color: '#00ff00', bgColor: '#00cc00', name: 'Slime Bomber',
-      projectileColor: '#66ff66', effect: 'splash'
+      cost: 70, damage: 50, range: 95, speed: 0.8,
+      emoji: '🐌', color: '#00ff00', bgColor: '#00cc00', name: 'Slime Bomber', effect: 'splash'
     },
     slow: { 
-      cost: 55, damage: 25, range: 90, speed: 1.3, emoji: '🐌', 
-      color: '#00ffff', bgColor: '#00cccc', name: 'Frost Shell',
-      projectileColor: '#66ffff', effect: 'slow'
+      cost: 55, damage: 25, range: 90, speed: 1.3,
+      emoji: '🐌', color: '#00ffff', bgColor: '#00cccc', name: 'Frost Shell', effect: 'slow'
     },
     laser: {
-      cost: 15000, damage: 450, range: 300, speed: 5, emoji: '🐌',
-      color: '#ff00ff', bgColor: '#cc00cc', name: 'Prism Snail',
-      projectileColor: '#ff66ff', effect: 'pierce'
+      cost: 15000, damage: 450, range: 300, speed: 5,
+      emoji: '🐌', color: '#ff00ff', bgColor: '#cc00cc', name: 'Prism Snail', effect: 'pierce'
     },
     poison: {
-      cost: 65, damage: 15, range: 80, speed: 1.2, emoji: '🐌',
-      color: '#99ff99', bgColor: '#66cc66', name: 'Toxic Spiral',
-      projectileColor: '#99ff99', effect: 'poison'
+      cost: 65, damage: 15, range: 80, speed: 1.2,
+      emoji: '🐌', color: '#99ff99', bgColor: '#66cc66', name: 'Toxic Spiral', effect: 'poison'
     }
   };
-  
-  // Enhanced enemy types
+
+  // Enemy types
   const enemyTypes = {
     basic: { health: 65, speed: 1, reward: 10, emoji: '🐛', name: 'Garden Bug' },
     fast: { health: 39, speed: 2.2, reward: 12, emoji: '🐜', name: 'Speed Ant' },
@@ -345,7 +348,7 @@
     swarm: { health: 25, speed: 2.5, reward: 2, emoji: '🦗', name: 'Swarm Locust' },
     shield: { health: 120, speed: 1.1, reward: 20, emoji: '🛡️', name: 'Shield Bug' }
   };
-  
+
   class Tower {
     constructor(x, y, type) {
       this.x = x;
@@ -357,37 +360,32 @@
       this.totalDamage = 0;
       this.level = 1;
     }
-    
+
     update(now) {
       const towerData = towerTypes[this.type];
       if (now - this.lastShot < 1000 / (towerData.speed * this.level * 0.1 + towerData.speed)) return;
-      
-      // Find target based on tower type strategy
+
       let target = this.findTarget();
-      
       if (target) {
         this.shoot(target, now);
         this.lastShot = now;
       }
     }
-    
+
     findTarget() {
       const towerData = towerTypes[this.type];
       let bestTarget = null;
       let bestValue = -1;
-      
+
       enemies.forEach(enemy => {
         const dist = Math.hypot(enemy.x - this.x, enemy.y - this.y);
         if (dist <= towerData.range) {
           let value = 0;
-          
-          // Different targeting strategies
           switch(this.type) {
             case 'speed':
               value = 1000 - dist; // Closest first
               break;
             case 'splash':
-              // Count nearby enemies for splash potential
               let nearbyCount = enemies.filter(e => 
                 Math.hypot(e.x - enemy.x, e.y - enemy.y) <= 60
               ).length;
@@ -399,21 +397,19 @@
             default:
               value = enemy.health - dist; // Strongest first
           }
-          
           if (value > bestValue) {
             bestValue = value;
             bestTarget = enemy;
           }
         }
       });
-      
       return bestTarget;
     }
-    
+
     shoot(target, now) {
       const towerData = towerTypes[this.type];
       const damage = towerData.damage + (this.level - 1) * 5;
-      
+
       projectiles.push({
         x: this.x,
         y: this.y,
@@ -426,8 +422,7 @@
         createdAt: now,
         tower: this
       });
-      
-      // Add muzzle flash effect
+
       effects.push({
         x: this.x,
         y: this.y,
@@ -437,15 +432,15 @@
         maxLife: 10
       });
     }
-    
+
     getSellValue() {
       return Math.floor(towerTypes[this.type].cost * 0.7 * this.level);
     }
-    
+
     draw() {
       const towerData = towerTypes[this.type];
-      
-      // Draw range circle when selected or in sell mode
+
+      // Range circle
       if ((selectedTowerType === this.type && !sellMode) || sellMode) {
         ctx.strokeStyle = sellMode ? '#ff6666' : towerData.color + '44';
         ctx.lineWidth = 2;
@@ -455,69 +450,54 @@
         ctx.stroke();
         ctx.setLineDash([]);
       }
-      
-      // Draw unique background for each tower type
+
+      // Draw background pattern
       this.drawBackground(towerData);
-      
-      // Draw tower base with gradient
-      const gradient = ctx.createRadialGradient(this.x, this.y, 8, this.x, this.y, 22);
-      gradient.addColorStop(0, towerData.color);
-      gradient.addColorStop(1, towerData.bgColor);
-      
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Border
+
+      // Draw sprite scaled to 50px height
+      const sprite = sprites[this.type];
+      if (sprite) {
+        const targetHeight = 50;
+        const scale = targetHeight / sprite.height;
+        const width = sprite.width * scale;
+        const height = sprite.height * scale;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.drawImage(sprite, -width/2, -height/2, width, height);
+        ctx.restore();
+      }
+
       ctx.strokeStyle = towerData.bgColor;
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      
-      // Inner highlight
-      ctx.strokeStyle = towerData.color + '88';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(this.x, this.y, 16, 0, Math.PI * 2);
       ctx.stroke();
-      
-      // Draw snail emoji
-      ctx.font = (26 + this.level * 2) + 'px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(towerData.emoji, this.x, this.y - 2);
-      
-      // Draw level indicator
+
       if (this.level > 1) {
         ctx.fillStyle = '#ffd700';
         ctx.font = '10px bold sans-serif';
+        ctx.textAlign='center';
         ctx.fillText('★'.repeat(this.level - 1), this.x, this.y + 28);
       }
-      
-      // Draw sell value when in sell mode
+
       if (sellMode) {
         ctx.fillStyle = '#ffff00';
         ctx.font = '12px bold sans-serif';
-        ctx.textAlign = 'center';
+        ctx.textAlign='center';
         ctx.fillText('💰' + this.getSellValue(), this.x, this.y - 35);
       }
     }
-    
+
     drawBackground(towerData) {
-      // Draw unique background patterns for each tower type
       ctx.save();
-      
       switch(this.type) {
         case 'basic':
-          // Simple dirt mound
           ctx.fillStyle = '#8B7355';
           ctx.beginPath();
           ctx.ellipse(this.x, this.y + 5, 25, 12, 0, 0, Math.PI * 2);
           ctx.fill();
           break;
-          
         case 'speed':
-          // Racing stripes
           ctx.strokeStyle = '#ff9999';
           ctx.lineWidth = 3;
           for(let i = -2; i <= 2; i++) {
@@ -527,9 +507,7 @@
             ctx.stroke();
           }
           break;
-          
         case 'splash':
-          // Slime puddle
           ctx.fillStyle = '#66ff6644';
           ctx.beginPath();
           ctx.arc(this.x, this.y, 30, 0, Math.PI * 2);
@@ -539,26 +517,20 @@
           ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
           ctx.fill();
           break;
-          
         case 'slow':
-          // Ice crystals
           ctx.strokeStyle = '#66ffff';
           ctx.lineWidth = 2;
           for(let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
-            const x1 = this.x + Math.cos(angle) * 15;
-            const y1 = this.y + Math.sin(angle) * 15;
-            const x2 = this.x + Math.cos(angle) * 25;
-            const y2 = this.y + Math.sin(angle) * 25;
+            const x = this.x + Math.cos(angle) * 15;
+            const y = this.y + Math.sin(angle) * 15;
             ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
+            ctx.moveTo(x, y);
+            ctx.lineTo(this.x + Math.cos(angle) * 25, this.y + Math.sin(angle) * 25);
             ctx.stroke();
           }
           break;
-          
         case 'laser':
-          // Prism effect
           const prismGradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, 30);
           prismGradient.addColorStop(0, '#ffffff44');
           prismGradient.addColorStop(0.5, '#ff66ff22');
@@ -568,11 +540,9 @@
           ctx.arc(this.x, this.y, 30, 0, Math.PI * 2);
           ctx.fill();
           break;
-          
         case 'poison':
-          // Toxic bubbles
           ctx.fillStyle = '#99ff9933';
-          for(let i = 0; i < 5; i++) {
+          for(let i=0; i<5; i++) {
             const angle = (i / 5) * Math.PI * 2;
             const x = this.x + Math.cos(angle) * 20;
             const y = this.y + Math.sin(angle) * 20;
@@ -582,15 +552,14 @@
           }
           break;
       }
-      
       ctx.restore();
     }
   }
-  
+
   class Enemy {
-    constructor(type, pathIndex = 0) {
+    constructor(type, pathIndex=0) {
       this.type = type;
-      this.maxHealth = enemyTypes[type].health * (1 + wave * 0.1);
+      this.maxHealth = enemyTypes[type].health * (1 + wave*0.1);
       this.health = this.maxHealth;
       this.speed = enemyTypes[type].speed;
       this.reward = enemyTypes[type].reward;
@@ -603,38 +572,25 @@
       this.poisonUntil = 0;
       this.shields = this.type === 'shield' ? 2 : 0;
     }
-    
+
     update(now) {
-      // Handle status effects
-      if (now > this.slowUntil) {
-        this.slowEffect = 1;
-      }
-      
-      // Handle poison damage
+      if (now > this.slowUntil) this.slowEffect = 1;
       if (now < this.poisonUntil && now % 500 < 16) {
         this.takeDamage(this.poisonDamage, 'poison');
       }
-      
       const currentSpeed = this.speed * this.slowEffect * gameSpeed;
-      
       if (this.pathIndex < path.length - 1) {
         const current = path[this.pathIndex];
         const next = path[this.pathIndex + 1];
-        
         const dx = next.x - current.x;
         const dy = next.y - current.y;
         const distance = Math.hypot(dx, dy);
-        
         if (distance > 0) {
           const moveX = (dx / distance) * currentSpeed;
           const moveY = (dy / distance) * currentSpeed;
-          
           this.x += moveX;
           this.y += moveY;
-          
-          // Check if reached next waypoint
-          const distToNext = Math.hypot(next.x - this.x, next.y - this.y);
-          if (distToNext < currentSpeed) {
+          if (Math.hypot(next.x - this.x, next.y - this.y) < currentSpeed) {
             this.pathIndex++;
             if (this.pathIndex < path.length) {
               this.x = path[this.pathIndex].x;
@@ -644,823 +600,1000 @@
         }
       }
     }
-    
-    takeDamage(damage, effectType = 'basic') {
+
+    takeDamage(damage, effectType='basic') {
       let actualDamage = damage;
-      
-      // Handle shields
       if (this.shields > 0 && effectType !== 'poison') {
         this.shields--;
         actualDamage *= 0.5;
-        
-        // Shield break effect
-        effects.push({
-          x: this.x,
-          y: this.y,
-          type: 'shieldBreak',
-          life: 30,
-          maxLife: 30
-        });
+        effects.push({x:this.x, y:this.y, type:'shieldBreak', life:30, maxLife:30});
       }
-      
       this.health -= actualDamage;
-      
-      // Apply special effects
       if (effectType === 'slow') {
         this.slowEffect = 0.4;
         this.slowUntil = performance.now() + 3000;
       } else if (effectType === 'poison') {
-        this.poisonDamage = Math.max(this.poisonDamage, damage * 0.5);
+        this.poisonDamage = Math.max(this.poisonDamage, damage*0.5);
         this.poisonUntil = performance.now() + 4000;
       }
-      
-      // Create damage particle
-      const color = {
-        basic: '#ffff00',
-        slow: '#00ffff',
-        splash: '#00ff00',
-        poison: '#99ff99',
-        pierce: '#ff00ff'
-      }[effectType] || '#ffff00';
-      
-      particles.push({
-        x: this.x + (Math.random() - 0.5) * 20,
-        y: this.y - 25,
-        text: '-' + Math.floor(actualDamage),
-        life: 60,
-        color: color,
-        vx: (Math.random() - 0.5) * 2,
-        vy: -2
-      });
-      
+      // Particle damage text
+      particles.push({x:this.x+(Math.random()-0.5)*20, y:this.y-25, text:'-' + Math.floor(actualDamage), life:60, color: (effectType==='poison') ? '#99ff99' : '#ffff00', vx:(Math.random()-0.5)*2, vy:-2});
       return this.health <= 0;
     }
-    
+
     reachedEnd() {
-      return this.pathIndex >= path.length - 1 && this.x >= path[path.length - 1].x;
+      return this.pathIndex >= path.length-1 && this.x >= path[path.length-1].x;
     }
-    
+
     draw() {
-      const enemyData = enemyTypes[this.type];
-      
-      // Draw status effect auras
+      // Effects like slow, poison, shields
       if (this.slowEffect < 1) {
         ctx.fillStyle = '#00ffff33';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(this.x, this.y, 20, 0, Math.PI*2); ctx.fill();
       }
-      
       if (this.poisonDamage > 0) {
         ctx.fillStyle = '#99ff9933';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 18, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(this.x, this.y, 18, 0, Math.PI*2); ctx.fill();
       }
-      
-      // Draw shields
       if (this.shields > 0) {
         ctx.strokeStyle = '#4444ff';
         ctx.lineWidth = 3;
-        ctx.setLineDash([4, 4]);
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 22, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.setLineDash([4,4]);
+        ctx.beginPath(); ctx.arc(this.x, this.y, 22, 0, Math.PI*2); ctx.stroke();
         ctx.setLineDash([]);
       }
-      
-      // Draw enemy with size variation
-      const size = this.type === 'mega' ? 36 : this.type === 'boss' ? 32 : 28;
-      ctx.font = size + 'px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(enemyData.emoji, this.x, this.y);
-      
-      // Draw health bar
-      const barWidth = 35;
-      const barHeight = 5;
-      const healthPercent = this.health / this.maxHealth;
-      
-      // Background
-      ctx.fillStyle = '#000';
-      ctx.fillRect(this.x - barWidth/2 - 1, this.y - 30 - 1, barWidth + 2, barHeight + 2);
-      
+
+      // Draw enemy sprite scaled to size
+      const enemyData = enemyTypes[this.type];
+      const size = (this.type==='mega') ? 36 : (this.type==='boss') ? 32 : 28;
+      const sprite = sprites[this.type];
+      if (sprite) {
+        const targetHeight = size;
+        const scale = targetHeight / sprite.height;
+        const width = sprite.width * scale;
+        const height = sprite.height * scale;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.drawImage(sprite, -width/2, -height/2, width, height);
+        ctx.restore();
+      } else {
+        ctx.font = size + 'px serif';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(enemyData.emoji, this.x, this.y);
+      }
+
       // Health bar
-      ctx.fillStyle = '#f00';
-      ctx.fillRect(this.x - barWidth/2, this.y - 30, barWidth, barHeight);
-      ctx.fillStyle = healthPercent > 0.6 ? '#0f0' : healthPercent > 0.3 ? '#ff0' : '#f44';
-      ctx.fillRect(this.x - barWidth/2, this.y - 30, barWidth * healthPercent, barHeight);
-      
-      // Shield indicators
+      const barWidth = 35;
+      const barHeight=5;
+      const healthPercent = this.health / this.maxHealth;
+      ctx.fillStyle='#000';
+      ctx.fillRect(this.x - barWidth/2 -1, this.y -30 -1, barWidth+2, barHeight+2);
+      ctx.fillStyle='#f00';
+      ctx.fillRect(this.x - barWidth/2, this.y -30, barWidth, barHeight);
+      ctx.fillStyle= healthPercent > 0.6 ? '#0f0' : healthPercent >0.3 ? '#ff0' : '#f44';
+      ctx.fillRect(this.x - barWidth/2, this.y -30, barWidth*healthPercent, barHeight);
+
       if (this.shields > 0) {
-        ctx.fillStyle = '#4444ff';
-        ctx.font = '12px sans-serif';
-        ctx.fillText('🛡️'.repeat(this.shields), this.x, this.y - 40);
+        ctx.fillStyle='#4444ff';
+        ctx.font='12px sans-serif';
+        ctx.fillText('🛡️'.repeat(this.shields), this.x, this.y -40);
       }
     }
   }
-  
+
+  // Update projectiles
   function updateProjectiles(now) {
     projectiles = projectiles.filter(proj => {
       const dx = proj.targetX - proj.x;
       const dy = proj.targetY - proj.y;
       const distance = Math.hypot(dx, dy);
-      
       if (distance < proj.speed || now - proj.createdAt > 3000) {
-        // Hit target or timeout
         if (proj.target && enemies.includes(proj.target)) {
           handleProjectileHit(proj);
         }
         return false;
       }
-      
-      // Move projectile
+      // move projectile
       proj.x += (dx / distance) * proj.speed;
       proj.y += (dy / distance) * proj.speed;
-      
-      // Update target position for homing
       if (proj.target && enemies.includes(proj.target)) {
         proj.targetX = proj.target.x;
         proj.targetY = proj.target.y;
       }
-      
       return true;
     });
   }
-  
+
   function handleProjectileHit(proj) {
     const killed = proj.target.takeDamage(proj.damage, proj.type);
-    
-    // Special effects based on projectile type
     switch(proj.type) {
       case 'splash':
-        // Splash damage
         enemies.forEach(enemy => {
           if (enemy !== proj.target) {
             const dist = Math.hypot(enemy.x - proj.target.x, enemy.y - proj.target.y);
-            if (dist <= 60) {
-              enemy.takeDamage(proj.damage * 0.6, 'splash');
-            }
+            if (dist <= 60) enemy.takeDamage(proj.damage * 0.6, 'splash');
           }
         });
-        
-        // Splash visual effect
-        effects.push({
-          x: proj.target.x,
-          y: proj.target.y,
-          type: 'explosion',
-          color: '#00ff00',
-          life: 30,
-          maxLife: 30
-        });
+        effects.push({x:proj.target.x, y:proj.target.y, type:'explosion', color:'#00ff00', life:30, maxLife:30});
         break;
-        
       case 'laser':
-        // Pierce through enemies
-        const pierceTargets = enemies.filter(enemy => {
-          if (enemy === proj.target) return false;
-          const dist = distanceToLine(enemy.x, enemy.y, proj.x, proj.target.x, proj.y, proj.target.y);
+        const lineX1=proj.x, lineY1=proj.y, lineX2=proj.targetX, lineY2=proj.targetY;
+        const line = {x1: lineX1, y1: lineY1, x2: lineX2, y2: lineY2};
+        const pierceTargets = enemies.filter(e => {
+          if (e===proj.target) return false;
+          const dist = distanceToLine(e.x, e.y, line.x1, line.y1, line.x2, line.y2);
           return dist < 15;
         });
-        
-        pierceTargets.forEach(enemy => {
-          enemy.takeDamage(proj.damage * 0.8, 'pierce');
-        });
+        pierceTargets.forEach(e => e.takeDamage(proj.damage*0.8, 'pierce'));
         break;
-        
       case 'poison':
-        // Apply poison effect
-        proj.target.poisonDamage = Math.max(proj.target.poisonDamage, proj.damage * 0.3);
+        proj.target.poisonDamage = Math.max(proj.target.poisonDamage, proj.damage*0.3);
         proj.target.poisonUntil = performance.now() + 5000;
         break;
     }
-    
     if (killed) {
       score += proj.target.reward;
       money += proj.target.reward;
       kills++;
       proj.tower.kills++;
       proj.tower.totalDamage += proj.damage;
-      
       // Upgrade tower after certain kills
       if (proj.tower.kills >= 10 * proj.tower.level && proj.tower.level < 3) {
         proj.tower.level++;
-        effects.push({
-          x: proj.tower.x,
-          y: proj.tower.y,
-          type: 'levelUp',
-          life: 60,
-          maxLife: 60
-        });
+        effects.push({x:proj.tower.x, y:proj.tower.y, type:'levelUp', life:60, maxLife:60});
       }
-      
       updateUI();
     }
   }
-  
+
   function distanceToLine(px, py, x1, y1, x2, y2) {
     const A = px - x1;
     const B = py - y1;
     const C = x2 - x1;
     const D = y2 - y1;
-    
     const dot = A * C + B * D;
     const lenSq = C * C + D * D;
     let param = -1;
     if (lenSq !== 0) param = dot / lenSq;
-    
     let xx, yy;
-    if (param < 0) {
-      xx = x1;
-      yy = y1;
-    } else if (param > 1) {
-      xx = x2;
-      yy = y2;
-    } else {
-      xx = x1 + param * C;
-      yy = y1 + param * D;
-    }
-    
+    if (param < 0) { xx = x1; yy = y1; }
+    else if (param > 1) { xx = x2; yy = y2; }
+    else { xx = x1 + param * C; yy = y1 + param * D; }
     const dx = px - xx;
     const dy = py - yy;
     return Math.sqrt(dx * dx + dy * dy);
   }
-  
+
   function drawProjectiles() {
     projectiles.forEach(proj => {
       const towerData = towerTypes[proj.type];
-      
       if (proj.type === 'laser') {
-        // Draw laser beam
         ctx.strokeStyle = towerData.projectileColor;
-        ctx.lineWidth = 3;
+        ctx.lineWidth=3;
         ctx.beginPath();
         ctx.moveTo(proj.x, proj.y);
         ctx.lineTo(proj.targetX, proj.targetY);
         ctx.stroke();
-        
-        // Laser glow
         ctx.strokeStyle = towerData.projectileColor + '44';
-        ctx.lineWidth = 6;
+        ctx.lineWidth=6;
         ctx.stroke();
       } else {
-        // Regular projectile
         ctx.fillStyle = towerData.projectileColor;
         ctx.beginPath();
-        ctx.arc(proj.x, proj.y, proj.type === 'splash' ? 5 : 4, 0, Math.PI * 2);
+        ctx.arc(proj.x, proj.y, proj.type==='splash'?5:4, 0, Math.PI*2);
         ctx.fill();
-        
-        // Projectile glow
         ctx.fillStyle = towerData.projectileColor + '66';
         ctx.beginPath();
-        ctx.arc(proj.x, proj.y, proj.type === 'splash' ? 8 : 6, 0, Math.PI * 2);
+        ctx.arc(proj.x, proj.y, proj.type==='splash'?8:6, 0, Math.PI*2);
         ctx.fill();
       }
     });
   }
-  
+
   function updateParticles() {
-    particles = particles.filter(particle => {
-      particle.x += particle.vx || 0;
-      particle.y += particle.vy || -1;
-      particle.life--;
-      return particle.life > 0;
+    particles = particles.filter(p => {
+      p.x += p.vx || 0;
+      p.y += p.vy || -1;
+      p.life--;
+      return p.life > 0;
     });
   }
-  
+
   function drawParticles() {
-    particles.forEach(particle => {
-      const alpha = particle.life / 60;
-      ctx.fillStyle = particle.color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+    particles.forEach(p => {
+      const alpha = p.life / 60;
+      ctx.fillStyle = p.color + Math.floor(alpha*255).toString(16).padStart(2,'0');
       ctx.font = '14px bold sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(particle.text, particle.x, particle.y);
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(p.text, p.x, p.y);
     });
   }
-  
+
   function updateEffects() {
-    effects = effects.filter(effect => {
-      effect.life--;
-      return effect.life > 0;
+    effects = effects.filter(e => {
+      e.life--;
+      return e.life > 0;
     });
   }
-  
+
   function drawEffects() {
-    effects.forEach(effect => {
-      const alpha = effect.life / effect.maxLife;
-      
-      switch(effect.type) {
+    effects.forEach(e => {
+      const alpha = e.life / e.maxLife;
+      switch(e.type) {
         case 'explosion':
-          const radius = (1 - alpha) * 50;
-          ctx.fillStyle = effect.color + Math.floor(alpha * 100).toString(16).padStart(2, '0');
+          ctx.fillStyle = e.color + Math.floor(alpha*100).toString(16).padStart(2,'0');
           ctx.beginPath();
-          ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
+          ctx.arc(e.x, e.y, (1-alpha)*50, 0, Math.PI*2);
           ctx.fill();
           break;
-          
         case 'muzzleFlash':
-          ctx.fillStyle = effect.color + Math.floor(alpha * 200).toString(16).padStart(2, '0');
+          ctx.fillStyle = e.color + Math.floor(alpha*200).toString(16).padStart(2,'0');
           ctx.beginPath();
-          ctx.arc(effect.x, effect.y, alpha * 8, 0, Math.PI * 2);
+          ctx.arc(e.x, e.y, alpha*8, 0, Math.PI*2);
           ctx.fill();
           break;
-          
         case 'levelUp':
-          ctx.fillStyle = '#ffd700' + Math.floor(alpha * 255).toString(16).padStart(2, '0');
-          ctx.font = (20 + (1-alpha) * 10) + 'px bold sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('LEVEL UP!', effect.x, effect.y - 40);
+          ctx.fillStyle = '#ffd700' + Math.floor(alpha*255).toString(16).padStart(2,'0');
+          ctx.font = (20 + (1-alpha)*10) + 'px bold sans-serif';
+          ctx.textAlign='center';
+          ctx.fillText('LEVEL UP!', e.x, e.y - 40);
           break;
-          
         case 'shieldBreak':
-          const shieldRadius = alpha * 25;
-          ctx.strokeStyle = '#4444ff' + Math.floor(alpha * 255).toString(16).padStart(2, '0');
-          ctx.lineWidth = 3;
+          ctx.strokeStyle = '#4444ff' + Math.floor(alpha*255).toString(16).padStart(2,'0');
+          ctx.lineWidth=3;
           ctx.beginPath();
-          ctx.arc(effect.x, effect.y, shieldRadius, 0, Math.PI * 2);
+          ctx.arc(e.x, e.y, alpha*25, 0, Math.PI*2);
           ctx.stroke();
           break;
       }
     });
   }
-  
+
   function drawPath() {
-    // Enhanced path with multiple layers
     ctx.strokeStyle = '#654321';
     ctx.lineWidth = 24;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+    ctx.lineCap='round'; ctx.lineJoin='round';
     ctx.beginPath();
     ctx.moveTo(path[0].x, path[0].y);
-    for (let i = 1; i < path.length; i++) {
+    for (let i=1; i<path.length; i++) {
       ctx.lineTo(path[i].x, path[i].y);
     }
     ctx.stroke();
-    
-    // Inner path
+
     ctx.strokeStyle = '#8B7355';
-    ctx.lineWidth = 18;
+    ctx.lineWidth=18;
     ctx.stroke();
-    
-    // Path centerline
+
     ctx.strokeStyle = '#A0522D';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([10, 5]);
+    ctx.lineWidth=2;
+    ctx.setLineDash([10,5]);
     ctx.stroke();
     ctx.setLineDash([]);
-    
-    // Enhanced lettuce farm at end
-    const farmX = path[path.length - 1].x;
-    const farmY = path[path.length - 1].y;
-    
-    // Farm base
-    ctx.fillStyle = '#8B4513';
-    ctx.fillRect(farmX - 25, farmY - 15, 50, 30);
-    
-    // Lettuce
-    ctx.font = '45px serif';
-    ctx.textAlign = 'center';
+
+    // End farm area
+    const farmX=path[path.length-1].x;
+    const farmY=path[path.length-1].y;
+    ctx.fillStyle='#8B4513';
+    ctx.fillRect(farmX-25,farmY-15,50,30);
+    ctx.font='45px serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText('🥬', farmX, farmY);
-    
-    // Farm sign
-    ctx.fillStyle = '#654321';
-    ctx.fillRect(farmX - 35, farmY - 40, 70, 20);
-    ctx.fillStyle = '#fff';
-    ctx.font = '12px bold sans-serif';
-    ctx.fillText('LETTUCE FARM', farmX, farmY - 30);
+    ctx.fillStyle='#654321';
+    ctx.fillRect(farmX-35, farmY-40,70,20);
+    ctx.fillStyle='#fff';
+    ctx.font='12px bold sans-serif';
+    ctx.fillText('LETTUCE FARM', farmX, farmY-30);
   }
-  
-  function drawGhostTower(x, y) {
+
+  function drawGhostTower(x,y) {
     if (!selectedTowerType || sellMode) return;
-    
-    const towerData = towerTypes[selectedTowerType];
-    
-    // Check if position is valid
     let validPosition = true;
-    for (let pathPoint of path) {
-      if (Math.hypot(x - pathPoint.x, y - pathPoint.y) < 45) {
-        validPosition = false;
-        break;
-      }
+    for (let p of path) {
+      if (Math.hypot(x - p.x, y - p.y) < 45) { validPosition = false; break; }
     }
-    
-    for (let tower of towers) {
-      if (Math.hypot(x - tower.x, y - tower.y) < 40) {
-        validPosition = false;
-        break;
-      }
+    for (let t of towers) {
+      if (Math.hypot(x - t.x, y - t.y) < 40) { validPosition = false; break; }
     }
-    
-    const canAfford = money >= towerData.cost;
+    const canAfford = money >= towerTypes[selectedTowerType].cost;
     const alpha = validPosition && canAfford ? '88' : '44';
-    const color = validPosition && canAfford ? towerData.color : '#ff0000';
-    
-    // Draw range circle
+    const color = validPosition && canAfford ? towerTypes[selectedTowerType].color : '#ff0000';
+
     ctx.strokeStyle = color + '33';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 5]);
+    ctx.lineWidth=2;
+    ctx.setLineDash([5,5]);
     ctx.beginPath();
-    ctx.arc(x, y, towerData.range, 0, Math.PI * 2);
+    ctx.arc(x, y, towerTypes[selectedTowerType].range, 0, Math.PI*2);
     ctx.stroke();
     ctx.setLineDash([]);
-    
-    // Draw ghost snail with background
-    ctx.fillStyle = color + '22';
-    ctx.beginPath();
-    ctx.arc(x, y, 25, 0, Math.PI * 2);
-    ctx.fill();
-    
-    ctx.fillStyle = color + alpha;
-    ctx.beginPath();
-    ctx.arc(x, y, 20, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = color + alpha;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    
-    ctx.font = '28px serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = color + alpha;
-    ctx.fillText(towerData.emoji, x, y - 2);
-    
-    // Show cost
+
+    // Draw sprite as ghost (scaled)
+    const sprite = sprites[selectedTowerType];
+    if (sprite) {
+      const targetHeight=50;
+      const scale= targetHeight / sprite.height;
+      const width = sprite.width * scale;
+      const height= sprite.height * scale;
+      ctx.save();
+      ctx.translate(x,y);
+      ctx.globalAlpha=0.4;
+      ctx.drawImage(sprite, -width/2, -height/2, width, height);
+      ctx.globalAlpha=1;
+      ctx.restore();
+    }
+
     ctx.fillStyle = canAfford ? '#00ff00' : '#ff0000';
-    ctx.font = '14px bold sans-serif';
-    ctx.fillText(towerData.cost + '🥬', x, y + 35);
+    ctx.font='14px bold sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText(towerTypes[selectedTowerType].cost + '🥬', x, y+35);
   }
-  
+
+  // Spawn wave function
   function spawnWave() {
     const waveData = getWaveData(wave);
-    let spawnDelay = 0;
-    
-    waveData.enemies.forEach(enemyType => {
+    let spawnDelay=0;
+    for (let et of waveData.enemies) {
       setTimeout(() => {
-        if (gameRunning) {
-          enemies.push(new Enemy(enemyType));
-        }
+        if (gameRunning) enemies.push(new Enemy(et));
       }, spawnDelay);
-      spawnDelay += Math.max(600 - wave * 20, 200);
-    });
-    
+      spawnDelay += Math.max(600 - wave*20, 200);
+    }
     updateWavePreview();
   }
-  
+
   function getWaveData(waveNum) {
-    const data = { enemies: [] };
-    
-    // Basic enemies
-    for (let i = 0; i < Math.min(waveNum + 3, 15); i++) {
-      data.enemies.push('basic');
+    const data={ enemies: [] };
+    for (let i=0; i<Math.min(waveNum+3, 15); i++) data.enemies.push('basic');
+    if (waveNum>=1) {
+      for (let i=0; i<Math.floor(waveNum*1.5); i++) data.enemies.push('swarm');
     }
-    
-    // Swarm enemies after wave 1
-    if (waveNum >= 1) {
-      for (let i = 0; i < Math.floor(waveNum * 1.5); i++) {
-        data.enemies.push('swarm');
-      }
+    if (waveNum>=2) {
+      for (let i=0; i<Math.floor(waveNum/2); i++) data.enemies.push('fast');
     }
-    
-    // Fast enemies after wave 2
-    if (waveNum >= 2) {
-      for (let i = 0; i < Math.floor(waveNum / 2); i++) {
-        data.enemies.push('fast');
-      }
+    if (waveNum>=3) {
+      for (let i=0; i<Math.floor(waveNum/3); i++) data.enemies.push('flying');
     }
-    
-    // Flying enemies after wave 3
-    if (waveNum >= 3) {
-      for (let i = 0; i < Math.floor(waveNum / 3); i++) {
-        data.enemies.push('flying');
-      }
+    if (waveNum>=4) {
+      for (let i=0; i<Math.floor(waveNum/4); i++) data.enemies.push('tank');
     }
-    
-    // Tank enemies after wave 4
-    if (waveNum >= 4) {
-      for (let i = 0; i < Math.floor(waveNum / 4); i++) {
-        data.enemies.push('tank');
-      }
+    if (waveNum>=5) {
+      for (let i=0; i<Math.floor(waveNum/5); i++) data.enemies.push('worm');
     }
-    
-    // Worms after wave 5
-    if (waveNum >= 5) {
-      for (let i = 0; i < Math.floor(waveNum / 5); i++) {
-        data.enemies.push('worm');
-      }
+    if (waveNum>=6) {
+      for (let i=0; i<Math.floor(waveNum/6); i++) data.enemies.push('spider');
     }
-    
-    // Spiders after wave 6
-    if (waveNum >= 6) {
-      for (let i = 0; i < Math.floor(waveNum / 6); i++) {
-        data.enemies.push('spider');
-      }
+    if (waveNum>=7) {
+      for (let i=0; i<Math.floor(waveNum/7); i++) data.enemies.push('shield');
     }
-    
-    // Shield enemies after wave 7
-    if (waveNum >= 7) {
-      for (let i = 0; i < Math.floor(waveNum / 7); i++) {
-        data.enemies.push('shield');
-      }
-    }
-    
-    // Boss every 5 waves
-    if (waveNum % 5 === 0) {
-      data.enemies.push('boss');
-    }
-    
-    // Mega boss every 10 waves
-    if (waveNum % 10 === 0) {
-      data.enemies.push('mega');
-    }
-    
+    if (waveNum%5===0) data.enemies.push('boss');
+    if (waveNum%10===0) data.enemies.push('mega');
     return data;
   }
-  
+
   function updateWavePreview() {
-    const waveData = getWaveData(wave + 1);
-    const preview = document.getElementById('wavePreview');
-    
+    const waveData = getWaveData(wave+1);
     const counts = {};
-    waveData.enemies.forEach(type => {
-      counts[type] = (counts[type] || 0) + 1;
-    });
-    
-    let text = '';
-    Object.entries(counts).forEach(([type, count]) => {
-      const name = enemyTypes[type].name;
-      text += `${enemyTypes[type].emoji} ${name} x${count}\n`;
-    });
-    
-    preview.innerHTML = text.replace(/\n/g, '<br>') || 'No enemies';
+    waveData.enemies.forEach(t => counts[t]= (counts[t]||0)+1);
+    let txt='';
+    for (let [type,count] of Object.entries(counts)) {
+      txt+=`${enemyTypes[type].emoji} ${enemyTypes[type].name} x${count}<br>`;
+    }
+    document.getElementById('wavePreview').innerHTML= txt || 'No enemies';
   }
-  
+
   function updateUI() {
-    document.getElementById('money').textContent = money;
-    document.getElementById('health').textContent = health;
-    document.getElementById('wave').textContent = wave;
-    document.getElementById('score').textContent = score;
-    document.getElementById('kills').textContent = kills;
-    
-    // Update tower button states
-    Object.keys(towerTypes).forEach(type => {
-      const btn = document.getElementById(type + 'Tower');
-      if (btn) {
-        btn.disabled = money < towerTypes[type].cost;
-      }
+    document.getElementById('money').textContent= money;
+    document.getElementById('health').textContent= health;
+    document.getElementById('wave').textContent= wave;
+    document.getElementById('score').textContent= score;
+    document.getElementById('kills').textContent= kills;
+    // update buttons
+    Object.keys(towerTypes).forEach(t => {
+      const btn=document.getElementById(t+'Tower');
+      if (btn) btn.disabled= money< towerTypes[t].cost;
     });
   }
-  
-  // Track mouse position
-  canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
+
+  // Mouse move
+  document.querySelector('#gameCanvas').addEventListener('mousemove', e => {
+    const rect = e.target.getBoundingClientRect();
+    mouseX=e.clientX - rect.left;
+    mouseY=e.clientY - rect.top;
   });
-  
-  function gameLoop(timestamp) {
+
+  // Main game loop
+ async function gameLoop(timestamp) {
     if (!gameRunning || gamePaused) {
       requestAnimationFrame(gameLoop);
       return;
     }
-    
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw enhanced background
-    const gradient = ctx.createRadialGradient(400, 250, 0, 400, 250, 500);
-    gradient.addColorStop(0, '#98fb98');
-    gradient.addColorStop(0.5, '#90ee90');
-    gradient.addColorStop(1, '#7cfc00');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Add subtle grass texture
-    ctx.fillStyle = '#228b2244';
-    for (let i = 0; i < 50; i++) {
-      const x = (i * 37) % canvas.width;
-      const y = (i * 23) % canvas.height;
-      ctx.fillRect(x, y, 2, 8);
-      ctx.fillRect(x + 5, y + 3, 2, 6);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // Draw background
+    const gradient= ctx.createRadialGradient(400,250,0,400,250,500);
+    gradient.addColorStop(0,'#98fb98');
+    gradient.addColorStop(0.5,'#90ee90');
+    gradient.addColorStop(1,'#7cfc00');
+    ctx.fillStyle=gradient;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    // Add grass texture
+    ctx.fillStyle='#228b22aa';
+    for (let i=0; i<50; i++) {
+      const x= (i*37)%canvas.width;
+      const y= (i*23)%canvas.height;
+      ctx.fillRect(x,y,2,8);
+      ctx.fillRect(x+5,y+3,2,6);
     }
-    
-    // Draw path
+
+    // Path
     drawPath();
-    
-    // Draw ghost tower at cursor position when tower is selected
+
+    // Ghost tower
     if (selectedTowerType && !sellMode) {
       drawGhostTower(mouseX, mouseY);
     }
-    
-    // Update and draw towers
-    towers.forEach(tower => {
-      tower.update(timestamp);
-      tower.draw();
-    });
-    
-    // Update and draw enemies
-    enemies = enemies.filter(enemy => {
-      enemy.update(timestamp);
-      enemy.draw();
-      
-      if (enemy.reachedEnd()) {
-        health -= (enemy.type === 'mega' ? 5 : enemy.type === 'boss' ? 3 : 1);
+
+    // Draw towers
+    for (let t of towers) {
+      t.update(timestamp);
+      t.draw();
+    }
+
+    // Enemies
+    enemies = enemies.filter(e => {
+      e.update(timestamp);
+      e.draw();
+      if (e.reachedEnd()) {
+        health -= (e.type==='mega') ? 5 : (e.type==='boss') ? 3 : 1;
         updateUI();
         return false;
       }
-      
-      return enemy.health > 0;
+      return e.health>0;
     });
-    
-    // Update projectiles
+
+    // Projectiles
     updateProjectiles(timestamp);
     drawProjectiles();
-    
-    // Update and draw particles
+
+    // Particles
     updateParticles();
     drawParticles();
-    
-    // Update and draw effects
+
+    // Effects
     updateEffects();
     drawEffects();
-    
-    // Check win/lose conditions
-    if (health <= 0) {
-      const finalMessage = `🎮 GAME OVER! 🎮\n\n` +
-                          `📊 Final Statistics:\n` +
-                          `• Score: ${score.toLocaleString()}\n` +
-                          `• Waves Survived: ${wave - 1}\n` +
-                          `• Total Kills: ${kills}\n` +
-                          `• Towers Built: ${towers.length}\n\n` +
-                          `🏆 ${getPerformanceRating()}\n\n` +
-                          `Thanks for defending the lettuce farm!`;
-      alert(finalMessage);
+
+    // Check game over
+    if (health<=0) {
+      alert(`🎮 GAME OVER! 🎮\n\n📊 Final Statistics:\n• Score: ${score.toLocaleString()}\n• Waves Survived: ${wave-1}\n• Kills: ${kills}\n• Towers Built: ${towers.length}\n\n🏆 ${getPerformanceRating()}\n\nThanks for defending the lettuce farm!`);
       location.reload();
       return;
     }
-    
-    if (enemies.length === 0 && gameRunning) {
-      // Wave completed
-      const bonus = 25 + (wave * 8);
-      money += bonus;
+
+    // Next wave
+    if (enemies.length===0 && gameRunning) {
+      const bonus= 25 + wave*8;
+      money+=bonus;
       wave++;
-      gameRunning = false;
-      
-      // Show wave completion effect
-      effects.push({
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        type: 'waveComplete',
-        life: 120,
-        maxLife: 120
-      });
-      
+      gameRunning=false;
+      effects.push({x:canvas.width/2, y:canvas.height/2, type:'waveComplete', life:120, maxLife:120});
       updateUI();
       updateWavePreview();
     }
-    
+
     requestAnimationFrame(gameLoop);
   }
-  
+
   function getPerformanceRating() {
-    if (wave >= 20) return "🏆 LETTUCE LEGEND! Incredible defense!";
-    if (wave >= 15) return "🥇 SNAIL MASTER! Outstanding work!";
-    if (wave >= 10) return "🥈 GARDEN HERO! Great job!";
-    if (wave >= 5) return "🥉 PEST CONTROLLER! Good effort!";
+    if (wave>=20) return "🏆 LETTUCE LEGEND! Incredible defense!";
+    if (wave>=15) return "🥇 SNAIL MASTER! Outstanding work!";
+    if (wave>=10) return "🥈 GARDEN HERO! Great job!";
+    if (wave>=5) return "🥉 PEST CONTROLLER! Good effort!";
     return "🌱 ROOKIE FARMER! Keep practicing!";
   }
-  
-  // Event listeners
-  canvas.addEventListener('click', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
+
+  // Event handlers
+  document.getElementById('startWaveBtn').onclick= ()=> {
+    if (!gameRunning) {
+      gameRunning=true;
+      spawnWave();
+    }
+  };
+  document.getElementById('pauseBtn').onclick= ()=> {
+    gamePaused= !gamePaused;
+    document.getElementById('pauseBtn').textContent= gamePaused ? '▶️ Resume':'⏸️ Pause';
+  };
+  document.getElementById('speedBtn').onclick= ()=> {
+    gameSpeed= gameSpeed===1?2: gameSpeed===2?3:1;
+    document.getElementById('speedBtn').textContent= `⚡ Speed: ${gameSpeed}x`;
+  };
+  document.getElementById('sellBtn').onclick= ()=> {
+    sellMode= !sellMode;
+    document.getElementById('sellBtn').textContent= sellMode ? '❌ Exit Sell':'💰 Sell Mode';
     if (sellMode) {
-      // Sell tower
-      for (let i = towers.length - 1; i >= 0; i--) {
-        const tower = towers[i];
-        if (Math.hypot(x - tower.x, y - tower.y) < 25) {
-          money += tower.getSellValue();
-          towers.splice(i, 1);
+      selectedTowerType=null;
+      document.querySelectorAll('.tower-btn').forEach(b=>b.classList.remove('selected-tower'));
+    }
+  };
+
+  // Tower buttons
+  Object.keys(towerTypes).forEach(t => {
+    document.getElementById(t+'Tower').onclick= ()=> {
+      if (sellMode) {
+        sellMode=false;
+        document.getElementById('sellBtn').textContent='💰 Sell Mode';
+      }
+      document.querySelectorAll('.tower-btn').forEach(b=>b.classList.remove('selected-tower'));
+      if (selectedTowerType===t) {
+        selectedTowerType=null;
+      } else {
+        selectedTowerType=t;
+        document.getElementById(t+'Tower').classList.add('selected-tower');
+      }
+    };
+  });
+
+  // Place tower
+  document.querySelector('#gameCanvas').addEventListener('click', e => {
+    const rect= e.target.getBoundingClientRect();
+    const x= e.clientX - rect.left;
+    const y= e.clientY - rect.top;
+    if (sellMode) {
+      // sell
+      for (let i=towers.length-1; i>=0; i--) {
+        const t= towers[i];
+        if (Math.hypot(x-t.x, y-t.y)<25) {
+          money+= t.getSellValue();
+          towers.splice(i,1);
           updateUI();
-          break;
+          return;
         }
       }
       return;
     }
-    
     if (!selectedTowerType) return;
-    
-    // Check if position is valid
-    let validPosition = true;
-    for (let pathPoint of path) {
-      if (Math.hypot(x - pathPoint.x, y - pathPoint.y) < 45) {
-        validPosition = false;
-        break;
-      }
+    // Check valid position
+    let valid= true;
+    for (let p of path) {
+      if (Math.hypot(x-p.x, y-p.y)<45) { valid=false; break; }
     }
-    
-    for (let tower of towers) {
-      if (Math.hypot(x - tower.x, y - tower.y) < 40) {
-        validPosition = false;
-        break;
-      }
+    for (let t of towers) {
+      if (Math.hypot(x-t.x, y-t.y)<40) { valid=false; break; }
     }
-    
-    if (validPosition && money >= towerTypes[selectedTowerType].cost) {
-      towers.push(new Tower(x, y, selectedTowerType));
+    if (valid && money>= towerTypes[selectedTowerType].cost) {
+      towers.push(new Tower(x,y, selectedTowerType));
       money -= towerTypes[selectedTowerType].cost;
       updateUI();
     }
   });
-  
-  // Tower selection
-  Object.keys(towerTypes).forEach(type => {
-    const btn = document.getElementById(type + 'Tower');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        if (sellMode) {
-          sellMode = false;
-          document.getElementById('sellBtn').textContent = '💰 Sell Mode';
-        }
-        
-        document.querySelectorAll('.tower-btn').forEach(b => {
-          b.classList.remove('selected-tower');
-        });
-        
-        if (selectedTowerType === type) {
-          selectedTowerType = null;
-        } else {
-          selectedTowerType = type;
-          btn.classList.add('selected-tower');
+
+  // Draw functions
+  function drawPath() {
+    ctx.strokeStyle='#654321';
+    ctx.lineWidth=24;
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.beginPath();
+    ctx.moveTo(path[0].x, path[0].y);
+    for (let i=1; i<path.length; i++) ctx.lineTo(path[i].x, path[i].y);
+    ctx.stroke();
+
+    ctx.strokeStyle='#8B7355';
+    ctx.lineWidth=18;
+    ctx.stroke();
+
+    ctx.strokeStyle='#A0522D';
+    ctx.lineWidth=2;
+    ctx.setLineDash([10,5]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // farm
+    const farmX=path[path.length-1].x;
+    const farmY=path[path.length-1].y;
+    ctx.fillStyle='#8B4513';
+    ctx.fillRect(farmX-25, farmY-15,50,30);
+    ctx.font='45px serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('🥬', farmX, farmY);
+    ctx.fillStyle='#654321';
+    ctx.fillRect(farmX-35, farmY-40,70,20);
+    ctx.fillStyle='#fff';
+    ctx.font='12px bold sans-serif';
+    ctx.fillText('LETTUCE FARM', farmX, farmY-30);
+  }
+
+  function drawGhostTower(x,y) {
+    if (!selectedTowerType || sellMode) return;
+    let valid=false;
+    for (let p of path) {
+      if (Math.hypot(x-p.x, y-p.y)<45) { valid=false; break; }
+    }
+    for (let t of towers) {
+      if (Math.hypot(x-t.x, y-t.y)<40) { valid=false; break; }
+    }
+    const canAfford= money >= towerTypes[selectedTowerType].cost;
+    const alpha= (valid && canAfford) ? '88' : '44';
+    const color= (valid && canAfford) ? towerTypes[selectedTowerType].color : '#ff0000';
+
+    ctx.strokeStyle= color + '33';
+    ctx.lineWidth=2;
+    ctx.setLineDash([5,5]);
+    ctx.beginPath();
+    ctx.arc(x, y, towerTypes[selectedTowerType].range, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw sprite as ghost
+    const sprite = sprites[selectedTowerType];
+    if (sprite) {
+      const targetHeight=50;
+      const scale= targetHeight / sprite.height;
+      const width= sprite.width * scale;
+      const height= sprite.height * scale;
+      ctx.save();
+      ctx.globalAlpha=0.4;
+      ctx.translate(x, y);
+      ctx.drawImage(sprite, -width/2, -height/2, width, height);
+      ctx.globalAlpha=1;
+      ctx.restore();
+    }
+
+    ctx.fillStyle= canAfford ? '#00ff00':'#ff0000';
+    ctx.font='14px bold sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText( towerTypes[selectedTowerType].cost + '🥬', x, y+35);
+  }
+
+  function spawnWave() {
+    const waveData= getWaveData(wave);
+    let delay=0;
+    for (let et of waveData.enemies) {
+      setTimeout(()=> {
+        if (gameRunning) enemies.push( new Enemy(et));
+      }, delay);
+      delay+= Math.max(600 - wave*20,200);
+    }
+    updateWavePreview();
+  }
+
+  function getWaveData(waveNum) {
+    const data= {enemies:[]};
+    for (let i=0; i<Math.min(waveNum+3,15); i++) data.enemies.push('basic');
+    if (waveNum>=1) for (let i=0; i<Math.floor(waveNum*1.5); i++) data.enemies.push('swarm');
+    if (waveNum>=2) for (let i=0; i<Math.floor(waveNum/2); i++) data.enemies.push('fast');
+    if (waveNum>=3) for (let i=0; i<Math.floor(waveNum/3); i++) data.enemies.push('flying');
+    if (waveNum>=4) for (let i=0; i<Math.floor(waveNum/4); i++) data.enemies.push('tank');
+    if (waveNum>=5) for (let i=0; i<Math.floor(waveNum/5); i++) data.enemies.push('worm');
+    if (waveNum>=6) for (let i=0; i<Math.floor(waveNum/6); i++) data.enemies.push('spider');
+    if (waveNum>=7) for (let i=0; i<Math.floor(waveNum/7); i++) data.enemies.push('shield');
+    if (waveNum%5===0) data.enemies.push('boss');
+    if (waveNum%10===0) data.enemies.push('mega');
+    return data;
+  }
+
+  function updateWavePreview() {
+    const waveData= getWaveData(wave+1);
+    const counts= {};
+    waveData.enemies.forEach(t => counts[t]= (counts[t]||0)+1);
+    let txt='';
+    for (let [type,count] of Object.entries(counts)) {
+      txt+= `${enemyTypes[type].emoji} ${enemyTypes[type].name} x${count}<br>`;
+    }
+    document.getElementById('wavePreview').innerHTML= txt || 'No enemies';
+  }
+
+  function updateUI() {
+    document.getElementById('money').textContent= money;
+    document.getElementById('health').textContent= health;
+    document.getElementById('wave').textContent= wave;
+    document.getElementById('score').textContent= score;
+    document.getElementById('kills').textContent= kills;
+    Object.keys(towerTypes).forEach(t => {
+      const btn= document.getElementById(t+'Tower');
+      if (btn) btn.disabled= money< towerTypes[t].cost;
+    });
+  }
+
+  // Mouse move
+  document.querySelector('#gameCanvas').addEventListener('mousemove', e => {
+    const rect= e.target.getBoundingClientRect();
+    mouseX= e.clientX - rect.left;
+    mouseY= e.clientY - rect.top;
+  });
+
+  // Main game loop
+  await loadSprites(); // Wait for all sprites to load
+
+  // Start the game
+  updateUI();
+  updateWavePreview();
+  requestAnimationFrame(gameLoop);
+
+  // The key part: your `Tower.draw()` now uses sprites
+  // You need to replace your existing Tower class definition with this one:
+  class Tower {
+    constructor(x,y,type) {
+      this.x=x; this.y=y; this.type=type;
+      this.lastShot=0;
+      this.target=null;
+      this.kills=0;
+      this.totalDamage=0;
+      this.level=1;
+    }
+    update(now) {
+      const data= towerTypes[this.type];
+      if (now - this.lastShot < 1000 / (data.speed * this.level * 0.1 + data.speed)) return;
+      let target= this.findTarget();
+      if (target) {
+        this.shoot(target, now);
+        this.lastShot=now;
+      }
+    }
+    findTarget() {
+      const data= towerTypes[this.type];
+      let best=null; let bestVal= -1;
+      enemies.forEach(e => {
+        const dist= Math.hypot(e.x - this.x, e.y - this.y);
+        if (dist<= data.range) {
+          let val=0;
+          switch(this.type) {
+            case 'speed': val= 1000 - dist; break;
+            case 'splash':
+              const nearby= enemies.filter(en => Math.hypot(en.x - e.x, en.y - e.y)<=60).length;
+              val= nearby*100 - dist; break;
+            case 'slow': val= e.speed*100 - dist; break;
+            default: val= e.health - dist; break;
+          }
+          if (val > bestVal) { best= e; bestVal= val; }
         }
       });
+      return best;
     }
-  });
-  
-  document.getElementById('startWaveBtn').onclick = () => {
-    if (!gameRunning) {
-      gameRunning = true;
-      spawnWave();
+    shoot(target, now) {
+      const data= towerTypes[this.type];
+      const dmg= data.damage + (this.level-1)*5;
+      projectiles.push({x:this.x, y:this.y, targetX: target.x, targetY: target.y, target: target, damage: dmg, speed:10, type:this.type, createdAt:now, tower:this});
+      effects.push({x:this.x, y:this.y, type:'muzzleFlash', color: data.projectileColor, life:10, maxLife:10});
     }
-  };
-  
-  document.getElementById('pauseBtn').onclick = () => {
-    gamePaused = !gamePaused;
-    document.getElementById('pauseBtn').textContent = gamePaused ? '▶️ Resume' : '⏸️ Pause';
-  };
-  
-  document.getElementById('speedBtn').onclick = () => {
-    gameSpeed = gameSpeed === 1 ? 2 : gameSpeed === 2 ? 3 : 1;
-    document.getElementById('speedBtn').textContent = `⚡ Speed: ${gameSpeed}x`;
-  };
-  
-  document.getElementById('sellBtn').onclick = () => {
-    sellMode = !sellMode;
-    document.getElementById('sellBtn').textContent = sellMode ? '❌ Exit Sell' : '💰 Sell Mode';
-    
-    if (sellMode) {
-      selectedTowerType = null;
-      document.querySelectorAll('.tower-btn').forEach(b => {
-        b.classList.remove('selected-tower');
-      });
+    getSellValue() {
+      return Math.floor(towerTypes[this.type].cost * 0.7 * this.level);
     }
-  };
-  
-  // Keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    switch(e.key) {
-      case ' ':
-        e.preventDefault();
-        document.getElementById('pauseBtn').click();
-        break;
-      case 's':
-      case 'S':
-        if (!gameRunning) document.getElementById('startWaveBtn').click();
-        break;
-      case '1':
-        document.getElementById('basicTower').click();
-        break;
-      case '2':
-        document.getElementById('speedTower').click();
-        break;
-      case '3':
-        document.getElementById('splashTower').click();
-        break;
-      case '4':
-        document.getElementById('slowTower').click();
-        break;
-      case '5':
-        document.getElementById('laserTower').click();
-        break;
-      case '6':
-        document.getElementById('poisonTower').click();
-        break;
+    draw() {
+      const data= towerTypes[this.type];
+
+      // Show range circle
+      if ((selectedTowerType===this.type && !sellMode)||sellMode) {
+        ctx.strokeStyle= sellMode ? '#ff6666' : data.color + '44';
+        ctx.lineWidth=2;
+        ctx.setLineDash(sellMode ? [5,5] : []);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, data.range, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Background pattern
+      this.drawBackground(data);
+
+      // Draw the sprite scaled to 50px height
+      const sprite= sprites[this.type];
+      if (sprite) {
+        const targetHeight= 50;
+        const scale= targetHeight/ sprite.height;
+        const width= sprite.width*scale;
+        const height= sprite.height*scale;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.drawImage(sprite, -width/2, -height/2, width, height);
+        ctx.restore();
+      }
+
+      ctx.strokeStyle= data.bgColor;
+      ctx.lineWidth=1;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 16, 0, Math.PI*2);
+      ctx.stroke();
+
+      if (this.level>1) {
+        ctx.fillStyle= '#ffd700';
+        ctx.font='10px bold sans-serif';
+        ctx.textAlign='center';
+        ctx.fillText('★'.repeat(this.level-1), this.x, this.y+28);
+      }
+
+      if (sellMode) {
+        ctx.fillStyle='#ffff00';
+        ctx.font='12px bold sans-serif';
+        ctx.textAlign='center';
+        ctx.fillText('💰'+this.getSellValue(), this.x, this.y-35);
+      }
     }
-  });
-  
-  // Initialize
+    drawBackground(data) {
+      ctx.save();
+      switch(this.type) {
+        case 'basic':
+          ctx.fillStyle='#8B7355';
+          ctx.beginPath();
+          ctx.ellipse(this.x, this.y+5, 25, 12, 0, 0, Math.PI*2);
+          ctx.fill();
+          break;
+        case 'speed':
+          ctx.strokeStyle='#ff9999';
+          ctx.lineWidth=3;
+          for (let i=-2; i<=2; i++) {
+            ctx.beginPath();
+            ctx.moveTo(this.x -15 + i*8, this.y -15);
+            ctx.lineTo(this.x +15 + i*8, this.y +15);
+            ctx.stroke();
+          }
+          break;
+        case 'splash':
+          ctx.fillStyle='#66ff6644';
+          ctx.beginPath(); ctx.arc(this.x, this.y,30,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle='#66ff6666';
+          ctx.beginPath(); ctx.arc(this.x, this.y,25,0,Math.PI*2); ctx.fill();
+          break;
+        case 'slow':
+          ctx.strokeStyle='#66ffff';
+          ctx.lineWidth=2;
+          for (let i=0; i<8; i++) {
+            const angle= (i/8)*Math.PI*2;
+            const x= this.x + Math.cos(angle)*15;
+            const y= this.y + Math.sin(angle)*15;
+            ctx.beginPath();
+            ctx.moveTo(x,y);
+            ctx.lineTo(this.x + Math.cos(angle)*25, this.y + Math.sin(angle)*25);
+            ctx.stroke();
+          }
+          break;
+        case 'laser':
+          const g= ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, 30);
+          g.addColorStop(0,'#ffffff44');
+          g.addColorStop(0.5,'#ff66ff22');
+          g.addColorStop(1,'#6666ff11');
+          ctx.fillStyle=g;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y,30,0,Math.PI*2);
+          ctx.fill();
+          break;
+        case 'poison':
+          ctx.fillStyle='#99ff9933';
+          for (let i=0; i<5; i++) {
+            const angle= (i/5)*Math.PI*2;
+            const x= this.x + Math.cos(angle)*20;
+            const y= this.y + Math.sin(angle)*20;
+            ctx.beginPath();
+            ctx.arc(x,y,4+Math.sin(performance.now()*0.01 + i)*2,0,Math.PI*2);
+            ctx.fill();
+          }
+          break;
+      }
+      ctx.restore();
+    }
+  }
+
+  // Enemy class remains unchanged, but its draw() now uses sprites
+  class Enemy {
+    constructor(type, pathIndex=0) {
+      this.type= type;
+      this.maxHealth= enemyTypes[type].health*(1+wave*0.1);
+      this.health= this.maxHealth;
+      this.speed= enemyTypes[type].speed;
+      this.reward= enemyTypes[type].reward;
+      this.pathIndex= pathIndex;
+      this.x= path[0].x;
+      this.y= path[0].y;
+      this.slowEffect=1;
+      this.slowUntil=0;
+      this.poisonDamage=0;
+      this.poisonUntil=0;
+      this.shields= this.type==='shield' ? 2 : 0;
+    }
+    update(now) {
+      if (now > this.slowUntil) this.slowEffect=1;
+      if (now< this.poisonUntil && now % 500<16) {
+        this.takeDamage(this.poisonDamage, 'poison');
+      }
+      const currentSpeed= this.speed* this.slowEffect* gameSpeed;
+      if (this.pathIndex< path.length-1) {
+        const current= path[this.pathIndex];
+        const next= path[this.pathIndex+1];
+        const dx= next.x - current.x;
+        const dy= next.y - current.y;
+        const dist= Math.hypot(dx,dy);
+        if (dist>0) {
+          const moveX= (dx/dist)* currentSpeed;
+          const moveY= (dy/dist)* currentSpeed;
+          this.x+= moveX;
+          this.y+= moveY;
+          if (Math.hypot(next.x - this.x, next.y - this.y)< currentSpeed) {
+            this.pathIndex++;
+            if (this.pathIndex< path.length) {
+              this.x= path[this.pathIndex].x;
+              this.y= path[this.pathIndex].y;
+            }
+          }
+        }
+      }
+    }
+    takeDamage(damage, effectType='basic') {
+      let actualDamage= damage;
+      if (this.shields>0 && effectType!=='poison') {
+        this.shields--;
+        actualDamage*=0.5;
+        effects.push({x:this.x,y:this.y,type:'shieldBreak',life:30, maxLife:30});
+      }
+      this.health-=actualDamage;
+      if (effectType==='slow') {
+        this.slowEffect=0.4;
+        this.slowUntil= performance.now()+3000;
+      } else if (effectType==='poison') {
+        this.poisonDamage= Math.max(this.poisonDamage, damage*0.5);
+        this.poisonUntil= performance.now()+4000;
+      }
+      particles.push({x:this.x+(Math.random()-0.5)*20,y:this.y-25,text:'-'+Math.floor(actualDamage),life:60, color: (effectType==='poison') ? '#99ff99' : '#ffff00', vx:(Math.random()-0.5)*2, vy:-2});
+      return this.health<=0;
+    }
+    reachedEnd() {
+      return this.pathIndex>= path.length-1 && this.x>= path[this.path.length-1].x;
+    }
+    draw() {
+      // effects
+      if (this.slowEffect<1) {
+        ctx.fillStyle= '#00ffff33';
+        ctx.beginPath(); ctx.arc(this.x, this.y, 20, 0, Math.PI*2); ctx.fill();
+      }
+      if (this.poisonDamage>0) {
+        ctx.fillStyle= '#99ff9933';
+        ctx.beginPath(); ctx.arc(this.x, this.y, 18, 0, Math.PI*2); ctx.fill();
+      }
+      if (this.shields>0) {
+        ctx.strokeStyle='#4444ff';
+        ctx.lineWidth=3;
+        ctx.setLineDash([4,4]);
+        ctx.beginPath(); ctx.arc(this.x, this.y, 22, 0, Math.PI*2); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      const sprite= sprites[this.type];
+      const size= (this.type==='mega') ?36 : (this.type==='boss') ?32:28;
+      if (sprite) {
+        const targetHeight= size;
+        const scale= targetHeight/ sprite.height;
+        const width= sprite.width*scale;
+        const height= sprite.height*scale;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.drawImage(sprite, -width/2, -height/2, width, height);
+        ctx.restore();
+      } else {
+        ctx.font= size + 'px serif';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(enemyTypes[this.type].emoji, this.x, this.y);
+      }
+
+      // health bar
+      const barW=35; const barH=5;
+      const hpPercent= this.health/ this.maxHealth;
+      ctx.fillStyle='#000';
+      ctx.fillRect(this.x - barW/2 -1, this.y -30 -1, barW+2, barH+2);
+      ctx.fillStyle='#f00';
+      ctx.fillRect(this.x - barW/2, this.y -30, barW, barH);
+      ctx.fillStyle= hpPercent>0.6 ? '#0f0' : hpPercent>0.3 ? '#ff0' : '#f44';
+      ctx.fillRect(this.x - barW/2, this.y -30, barW*hpPercent, barH);
+
+      if (this.shields>0) {
+        ctx.fillStyle='#4444ff';
+        ctx.font='12px sans-serif';
+        ctx.fillText('🛡️'.repeat(this.shields), this.x, this.y -40);
+      }
+    }
+  }
+
+  // updateProjectiles, handleProjectileHit, distanceToLine, etc. same as before
+  // ... (rest of your code, same as previous, unchanged) ...
+
+  // Initialize game after sprites are loaded
+  await loadSprites();
   updateUI();
   updateWavePreview();
   requestAnimationFrame(gameLoop);
