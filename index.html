@@ -253,6 +253,21 @@
           <span>⚡ 1.2 Speed</span>
         </div>
       </button>
+
+      <button class="tower-btn" id="support">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <strong>Money Snail 💰</strong><br>
+      <small>Generates income</small>
+    </div>
+    <div style="text-align: right;">
+      <div>💰 40 🥬</div>
+    </div>
+  </div>
+  <div class="tower-stats">
+    <span>💸 +10 🥬 / 3 sec</span>
+  </div>
+</button>
       
       <div id="waveInfo">
         <h4>📊 Next Wave Preview:</h4>
@@ -393,6 +408,13 @@ const path = [
       color: '#99ff99', bgColor: '#66cc66', name: 'Toxic Spiral',
       projectileColor: '#99ff99', effect: 'poison'
     },
+    support: { 
+  cost: 100, damage: 0, range: 0, speed: 0, emoji: '🐌', 
+  color: '#ffff00', bgColor: '#ffff66', name: 'Money Snail', 
+  effect: 'support', 
+  produceInterval: 3000, // every 3 seconds
+  produceAmount: 25 // amount of money generated
+}
   };
   
   // Enhanced enemy types
@@ -1405,6 +1427,21 @@ const path = [
   updateWavePreview();
   requestAnimationFrame(gameLoop);
 })();
+  
+const supportBtn = document.getElementById('support');
+if (supportBtn) {
+  supportBtn.addEventListener('click', () => {
+    // Remove any 'selected-tower' highlights from other buttons
+    document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected-tower'));
+    // Toggle support selection
+    if (selectedTowerType === 'support') {
+      selectedTowerType = null; // Deselect if already selected
+    } else {
+      selectedTowerType = 'support'; // Select support tower
+      supportBtn.classList.add('selected-tower');
+    }
+  });
+}  
 </script>
 
 </body>
