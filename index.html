@@ -130,8 +130,8 @@
 <div id="scrollContainer">
   <div id="ui">
     <div id="gameInfo">
-      <div>💚 Health: <span id="health">25</span>  |  🥬 Lettuce Currency: <span id="money">120</span></div>
-      <div>Wave: <span id="wave">1</span>  |  Score: <span id="score">0</span>  |  Kills: <span id="kills">0</span></div>
+      <div>💚 Health: <span id="health">25</span>  |  🥬 Lettuce Currency: <span id="money">120</span></div>
+      <div>Wave: <span id="wave">1</span>  |  Score: <span id="score">0</span>  |  Kills: <span id="kills">0</span></div>
     </div>
     <div>
       <button id="startWaveBtn">Start Wave</button>
@@ -217,19 +217,41 @@
       <button class="tower-btn" id="laserTower">
         <div style="display: flex; align-items: center; justify-content: space-between;">
           <div>
-            <strong>Prism Snail 🌈</strong><br>
-            <small>Piercing laser beam</small>
-          </div>
-          <div style="text-align: right;">
-            <div>💰 15000 🥬</div>
-          </div>
-        </div>
-        <div class="tower-stats">
-          <span>⚔️ 450 DMG</span>
-          <span>🎯 300 Range</span>
-          <span>⚡ 5 Speed</span>
-        </div>
-      </button>
+<!-- Prism Snail 🌈 -->
+<button class="tower-btn" id="laserTower">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <strong>Prism Snail 🌈</strong><br>
+      <small>Piercing laser beam</small>
+    </div>
+    <div style="text-align: right;">
+      <div>💰 15000 🥬</div>
+    </div>
+  </div>
+  <div class="tower-stats">
+    <span>⚔️ 450 DMG</span>
+    <span>🎯 300 Range</span>
+    <span>⚡ 5 Speed</span>
+  </div>
+</button>
+
+<!-- Bomb Snail 💣 -->
+<button class="tower-btn" id="bombTower">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <strong>Bomb Snail 💣</strong><br>
+      <small>High damage, short-range explosive</small>
+    </div>
+    <div style="text-align: right;">
+      <div>💰 575 🥬</div>
+    </div>
+  </div>
+  <div class="tower-stats">
+    <span>⚔️ 999999 DMG</span>
+    <span>🎯 50 Range</span>
+    <span>⚡ 0.006 Speed</span>
+  </div>
+</button>
 
       <button class="tower-btn" id="poisonTower">
         <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -313,33 +335,33 @@ const path = [
 {x:363, y:740},
   {x:360, y:423},
   {x:483, y:422},
-  {x:481, y:303}, 
-  {x:361, y:303}, 
+  {x:481, y:303},
+  {x:361, y:303},
   {x:284, y:419},
-  {x:162, y:421}, 
-  {x:162, y:305}, 
+  {x:162, y:421},
+  {x:162, y:305},
   {x:279, y:304},
   {x:360, y:423},
   {x:483, y:422},
   {x:600, y:422},
-  {x:721, y:305}, 
-  {x:918, y:303}, 
+  {x:721, y:305},
+  {x:918, y:303},
   {x:919, y:-58},
-  {x:363, y:-9}, 
+  {x:363, y:-9},
   {x:363, y:101},
-  {x:240, y:100}, 
-  {x:240, y:218}, 
-  {x:355, y:222}, 
+  {x:240, y:100},
+  {x:240, y:218},
+  {x:355, y:222},
   {x:480, y:223},
-  {x:479, y:101}, 
-  {x:600, y:102}, 
-  {x:603, y:219}, 
-  {x:714, y:219}, 
-  {x:910, y:221}, 
-  {x:916, y:539}, 
-  {x:-72, y:540}, 
-  {x:-74, y:224}, 
-  {x:121, y:221}, 
+  {x:479, y:101},
+  {x:600, y:102},
+  {x:603, y:219},
+  {x:714, y:219},
+  {x:910, y:221},
+  {x:916, y:539},
+  {x:-72, y:540},
+  {x:-74, y:224},
+  {x:121, y:221},
   {x:120, y:100}
 ];
 
@@ -381,6 +403,10 @@ const towerTypes = {
     effect: 'support', 
     produceInterval: 3000, 
     produceAmount: 25
+  },
+  bomb: {
+    cost: 575, damage: 999999, range: 50, speed: 0.006, emoji: '🐌',
+    color: '#222222', bgColor: '#444', name: 'Bomb Snail'
   }
 };
 
@@ -467,9 +493,9 @@ class Tower {
   draw() {
     const towerData = towerTypes[this.type];
     if ((selectedTowerType === this.type && !sellMode) || sellMode) {
-      ctx.strokeStyle = sellMode ? '#ff6666' : towerData.color + '44';
+      ctx.strokeStyle = towerData.color + '44';
       ctx.lineWidth = 2;
-      ctx.setLineDash(sellMode ? [5, 5] : []);
+      ctx.setLineDash([5, 5]);
       ctx.beginPath();
       ctx.arc(this.x, this.y, towerData.range, 0, Math.PI * 2);
       ctx.stroke();
@@ -634,7 +660,7 @@ class Enemy {
       this.slowEffect = 0.4;
       this.slowUntil = performance.now() + 3000;
     } else if (effectType === 'poison') {
-      this.poisonDamage = Math.max(this.poisonDamage, damage * 0.5);
+      this.poisonDamage = Math.max(this.poisonDamage, damage * 0.3);
       this.poisonUntil = performance.now() + 4000;
     }
     const color = {
