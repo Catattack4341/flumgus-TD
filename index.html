@@ -247,6 +247,22 @@
           <span>⚡ 1.2 Speed</span>
         </div>
       </button>
+      <button class="tower-btn" id="moltenSnail">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <strong>🔥 Molten Snail</strong><br>
+      <small>Spits lava, damages & burns enemies</small>
+    </div>
+    <div style="text-align: right;">
+      <div>💰 80 🥬</div>
+    </div>
+  </div>
+  <div class="tower-stats">
+    <span>⚔️ 40 DMG</span>
+    <span>🎯 70 Range</span>
+    <span>⚡ 1.2 Speed</span>
+  </div>
+</button>
 
       <!-- Removed support button from UI for now, but you can keep it if you want to place support towers -->
       <button class="tower-btn" id="support">
@@ -381,7 +397,18 @@ const towerTypes = {
     effect: 'support', 
     produceInterval: 3000, 
     produceAmount: 25
-  }
+  },
+  moltenSnail: {
+  cost: 80,
+  damage: 40,
+  range: 70,
+  speed: 1.2,
+  emoji: '🐌', // or '🐌' if you prefer
+  color: '#FFA500', // orange
+  bgColor: '#FF8C00', // dark orange
+  name: 'Molten Snail',
+  effect: 'splashBurn' // custom effect type
+}
 };
 
 // Enemy types
@@ -717,45 +744,60 @@ function updateProjectiles(now) {
   });
 }
 function handleProjectileHit(proj) {
-  const killed = proj.target.takeDamage(proj.damage, proj.type);
-  switch(proj.type) {
-    case 'splash':
-      enemies.forEach(enemy => {
-        if (enemy !== proj.target) {
-          const dist = Math.hypot(enemy.x - proj.target.x, enemy.y - proj.target.y);
-          if (dist <= 60) {
-            enemy.takeDamage(proj.damage * 0.6, 'splash');
+  if (proj.type === 'moltenSnail') {
+    const radius = 40; // splash radius
+    enemies.forEach(enemy => {
+      const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
+      if (dist <= radius) {
+        enemy.takeDamage(proj.damage, 'splashBurn');
+        enemy.poisonDamage = 10; // burn damage over time
+        enemy.poisonUntil = performance.now() + 3000;
+        effects.push({ x: enemy.x, y: enemy.y, type: 'burn', life: 60, maxLife: 60 });
+      }
+    });
+    effects.push({ x: proj.x, y: proj.y, type: 'explosion', color: '#FFA500', life: 20, maxLife: 20 });
+  } else {
+    // Your existing code:
+    const killed = proj.target.takeDamage(proj.damage, proj.type);
+    switch(proj.type) {
+      case 'splash':
+        enemies.forEach(enemy => {
+          if (enemy !== proj.target) {
+            const dist = Math.hypot(enemy.x - proj.target.x, enemy.y - proj.target.y);
+            if (dist <= 60) {
+              enemy.takeDamage(proj.damage * 0.6, 'splash');
+            }
           }
-        }
-      });
-      effects.push({ x: proj.target.x, y: proj.target.y, type: 'explosion', color: '#00ff00', life: 30, maxLife: 30 });
-      break;
-    case 'laser':
-      const pierceTargets = enemies.filter(enemy => {
-        if (enemy === proj.target) return false;
-        const dist = distanceToLine(enemy.x, enemy.y, proj.x, proj.target.x, proj.y, proj.target.y);
-        return dist < 15;
-      });
-      pierceTargets.forEach(enemy => {
-        enemy.takeDamage(proj.damage * 0.8, 'pierce');
-      });
-      break;
-    case 'poison':
-      proj.target.poisonDamage = Math.max(proj.target.poisonDamage, proj.damage * 0.3);
-      proj.target.poisonUntil = performance.now() + 5000;
-      break;
-  }
-  if (killed) {
-    score += proj.target.reward;
-    money += proj.target.reward;
-    kills++;
-    proj.tower.kills++;
-    proj.tower.totalDamage += proj.damage;
-    if (proj.tower.kills >= 10 * proj.tower.level && proj.tower.level < 3) {
-      proj.tower.level++;
-      effects.push({ x: proj.tower.x, y: proj.tower.y, type: 'levelUp', life: 60, maxLife: 60 });
+        });
+        effects.push({ x: proj.target.x, y: proj.target.y, type: 'explosion', color: '#00ff00', life: 30, maxLife: 30 });
+        break;
+      case 'laser':
+        const pierceTargets = enemies.filter(enemy => {
+          if (enemy === proj.target) return false;
+          const dist = distanceToLine(enemy.x, enemy.y, proj.x, proj.target.x, proj.y, proj.target.y);
+          return dist < 15;
+        });
+        pierceTargets.forEach(enemy => {
+          enemy.takeDamage(proj.damage * 0.8, 'pierce');
+        });
+        break;
+      case 'poison':
+        proj.target.poisonDamage = Math.max(proj.target.poisonDamage, proj.damage * 0.3);
+        proj.target.poisonUntil = performance.now() + 5000;
+        break;
     }
-    updateUI();
+    if (killed) {
+      score += proj.target.reward;
+      money += proj.target.reward;
+      kills++;
+      proj.tower.kills++;
+      proj.tower.totalDamage += proj.damage;
+      if (proj.tower.kills >= 10 * proj.tower.level && proj.tower.level < 3) {
+        proj.tower.level++;
+        effects.push({ x: proj.tower.x, y: proj.tower.y, type: 'levelUp', life: 60, maxLife: 60 });
+      }
+      updateUI();
+    }
   }
 }
 function distanceToLine(px, py, x1, y1, x2, y2) {
@@ -1118,7 +1160,7 @@ function gameLoop(timestamp) {
   updateEffects();
   drawEffects();
 
-  // Game over check
+  // Game over
   if (health <= 0) {
     alert(`🎮 GAME OVER! 🎮\n\n` +
           `📊 Final Statistics:\n` +
@@ -1153,7 +1195,7 @@ function getPerformanceRating() {
   return "🌱 ROOKIE FARMER! Keep practicing!";
 }
 
-// Button event handlers
+// Button handlers
 document.getElementById('startWaveBtn').onclick = () => {
   if (!gameRunning) {
     gameRunning = true;
@@ -1241,12 +1283,12 @@ document.getElementById('gameCanvas').addEventListener('click', (e) => {
 const supportBtn = document.getElementById('support');
 if (supportBtn) {
   supportBtn.addEventListener('click', () => {
-    // When clicked, toggle support tower placement
+    // Toggle support tower placement
     document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected-tower'));
     if (selectedTowerType === 'support') {
-      selectedTowerType = null; // Deselect if already selected
+      selectedTowerType = null;
     } else {
-      selectedTowerType = 'support'; // Select support tower for placement
+      selectedTowerType = 'support';
       supportBtn.classList.add('selected-tower');
     }
   });
@@ -1261,6 +1303,16 @@ setInterval(() => {
   });
   updateUI();
 }, 3000);
+
+// Add the "Molten Snail" button event listener
+document.getElementById('moltenSnail').addEventListener('click', () => {
+  // Deselect other buttons
+  document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected'));
+  // Set selected tower
+  selectedTowerType = 'moltenSnail';
+  // Highlight the button
+  document.getElementById('moltenSnail').classList.add('selected');
+});
 
 // Initialize UI
 updateUI();
