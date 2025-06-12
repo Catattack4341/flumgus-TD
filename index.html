@@ -1152,15 +1152,6 @@ function updateUI() {
     }
   });
 }
-
-  document.getElementById('fireworkTower').addEventListener('click', () => {
-  // Deselect other buttons
-  document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected-tower'));
-  // Set the selected type
-  selectedTowerType = 'firework';
-  // Highlight the button
-  document.getElementById('fireworkTower').classList.add('selected-tower');
-});
   
 // Mouse move for ghost tower preview
 document.getElementById('gameCanvas').addEventListener('mousemove', (e) => {
@@ -1389,6 +1380,20 @@ document.getElementById('moltenSnail').addEventListener('click', () => {
 // Initialize UI
 updateUI();
 updateWavePreview();
+  
+  document.getElementById('fireworkTower').addEventListener('click', () => {
+  // Deselect all other tower buttons
+  document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected-tower'));
+  
+  // Toggle selection
+  if (selectedTowerType === 'firework') {
+    selectedTowerType = null;
+    document.getElementById('fireworkTower').classList.remove('selected-tower');
+  } else {
+    selectedTowerType = 'firework';
+    document.getElementById('fireworkTower').classList.add('selected-tower');
+  }
+});
 
 // Start game loop
 requestAnimationFrame(gameLoop);
