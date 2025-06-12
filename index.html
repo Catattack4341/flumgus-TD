@@ -146,156 +146,174 @@
     <div id="sidebar">
       <h3>🐌 Elite Snail Defense Corps</h3>
       
-      <button class="tower-btn" id="basicTower">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div>
-            <strong>Normal Snail 🐌</strong><br>
-            <small>Steady and reliable defender</small>
-          </div>
-          <div style="text-align: right;">
-            <div>💰 25 🥬</div>
-          </div>
+<div style="display: flex; gap: 20px;">
+  <!-- First column: All your towers -->
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <!-- Normal Snail -->
+    <button class="tower-btn" id="basicTower">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Normal Snail 🐌</strong><br>
+          <small>Steady and reliable defender</small>
         </div>
-        <div class="tower-stats">
-          <span>⚔️ 30 DMG</span>
-          <span>🎯 85 Range</span>
-          <span>⚡ 1.0 Speed</span>
+        <div style="text-align: right;">
+          <div>💰 25 🥬</div>
         </div>
-      </button>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 30 DMG</span>
+        <span>🎯 85 Range</span>
+        <span>⚡ 1.0 Speed</span>
+      </div>
+    </button>
 
-      <button class="tower-btn" id="speedTower">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div>
-            <strong>Turbo Snail 🏎️</strong><br>
-            <small>Lightning-fast rapid fire</small>
-          </div>
-          <div style="text-align: right;">
-            <div>💰 50 🥬</div>
-          </div>
+    <!-- Turbo Snail -->
+    <button class="tower-btn" id="speedTower">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Turbo Snail 🏎️</strong><br>
+          <small>Lightning-fast rapid fire</small>
         </div>
-        <div class="tower-stats">
-          <span>⚔️ 2 DMG</span>
-          <span>🎯 75 Range</span>
-          <span>⚡ 15 Speed</span>
+        <div style="text-align: right;">
+          <div>💰 50 🥬</div>
         </div>
-      </button>
-      
-      <button class="tower-btn" id="sniperTower">
-  <div style="display: flex; align-items: center; justify-content: space-between;">
-    <div>
-      <strong>Sniper Snail 🎯</strong><br>
-      <small>High damage, long-range sniper</small>
-    </div>
-    <div style="text-align: right;">
-      <div>💰 3000 🥬</div>
-    </div>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 2 DMG</span>
+        <span>🎯 75 Range</span>
+        <span>⚡ 15 Speed</span>
+      </div>
+    </button>
+
+    <!-- Sniper Snail -->
+    <button class="tower-btn" id="sniperTower">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Sniper Snail 🎯</strong><br>
+          <small>High damage, long-range sniper</small>
+        </div>
+        <div style="text-align: right;">
+          <div>💰 3000 🥬</div>
+        </div>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 2000 DMG</span>
+        <span>🎯 1000 Range</span>
+        <span>⚡ 10s CD</span>
+      </div>
+    </button>
+
+    <!-- Slime Bomber -->
+    <button class="tower-btn" id="splashTower">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Slime Bomber 🟢</strong><br>
+          <small>Explosive area damage</small>
+        </div>
+        <div style="text-align: right;">
+          <div>💰 70 🥬</div>
+        </div>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 50 DMG</span>
+        <span>🎯 95 Range</span>
+        <span>⚡ 0.8 Speed</span>
+      </div>
+    </button>
+
+    <!-- Frost Shell -->
+    <button class="tower-btn" id="slowTower">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Frost Shell 🧊</strong><br>
+          <small>Freezing crowd control</small>
+        </div>
+        <div style="text-align: right;">
+          <div>💰 55 🥬</div>
+        </div>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 25 DMG</span>
+        <span>🎯 90 Range</span>
+        <span>⚡ 1.3 Speed</span>
+      </div>
+    </button>
+
+    <!-- Prism Snail -->
+    <button class="tower-btn" id="laserTower">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Prism Snail 🌈</strong><br>
+          <small>Piercing laser beam</small>
+        </div>
+        <div style="text-align: right;">
+          <div>💰 15000 🥬</div>
+        </div>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 450 DMG</span>
+        <span>🎯 300 Range</span>
+        <span>⚡ 5 Speed</span>
+      </div>
+    </button>
+
+    <!-- Toxic Spiral -->
+    <button class="tower-btn" id="poisonTower">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Toxic Spiral 💚</strong><br>
+          <small>Damage over time</small>
+        </div>
+        <div style="text-align: right;">
+          <div>💰 65 🥬</div>
+        </div>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 15+20 DMG</span>
+        <span>🎯 80 Range</span>
+        <span>⚡ 1.2 Speed</span>
+      </div>
+    </button>
+
+    <!-- Fire Snail -->
+    <button class="tower-btn" id="moltenSnail">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>🔥 Fire Snail</strong><br>
+          <small>Spits fire, damages & burns enemies</small>
+        </div>
+        <div style="text-align: right;">
+          <div>💰 80 🥬</div>
+        </div>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 40 DMG</span>
+        <span>🎯 70 Range</span>
+        <span>⚡ 1.2 Speed</span>
+      </div>
+    </button>
+
+    <!-- Money Snail (Support / Income Tower) -->
+    <button class="tower-btn" id="support">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Money Snail 💰</strong><br>
+          <small>Generates income</small>
+        </div>
+        <div style="text-align: right;">
+          <div>💰 1000 🥬</div>
+        </div>
+      </div>
+      <div class="tower-stats">
+        <span>💸 +10 🥬 / 3 sec</span>
+      </div>
+    </button>
   </div>
-  <div class="tower-stats">
-    <span>⚔️ 2000 DMG</span>
-    <span>🎯 1000 Range</span>
-    <span>⚡ 10s CD</span>
+  <!-- Second column for future towers -->
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <!-- Future towers go here -->
   </div>
-</button>
-
-      <button class="tower-btn" id="splashTower">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div>
-            <strong>Slime Bomber 🟢</strong><br>
-            <small>Explosive area damage</small>
-          </div>
-          <div style="text-align: right;">
-            <div>💰 70 🥬</div>
-          </div>
-        </div>
-        <div class="tower-stats">
-          <span>⚔️ 50 DMG</span>
-          <span>🎯 95 Range</span>
-          <span>⚡ 0.8 Speed</span>
-        </div>
-      </button>
-
-      <button class="tower-btn" id="slowTower">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div>
-            <strong>Frost Shell 🧊</strong><br>
-            <small>Freezing crowd control</small>
-          </div>
-          <div style="text-align: right;">
-            <div>💰 55 🥬</div>
-          </div>
-        </div>
-        <div class="tower-stats">
-          <span>⚔️ 25 DMG</span>
-          <span>🎯 90 Range</span>
-          <span>⚡ 1.3 Speed</span>
-        </div>
-      </button>
-
-      <button class="tower-btn" id="laserTower">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div>
-            <strong>Prism Snail 🌈</strong><br>
-            <small>Piercing laser beam</small>
-          </div>
-          <div style="text-align: right;">
-            <div>💰 15000 🥬</div>
-          </div>
-        </div>
-        <div class="tower-stats">
-          <span>⚔️ 450 DMG</span>
-          <span>🎯 300 Range</span>
-          <span>⚡ 5 Speed</span>
-        </div>
-      </button>
-
-      <button class="tower-btn" id="poisonTower">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div>
-            <strong>Toxic Spiral 💚</strong><br>
-            <small>Damage over time</small>
-          </div>
-          <div style="text-align: right;">
-            <div>💰 65 🥬</div>
-          </div>
-        </div>
-        <div class="tower-stats">
-          <span>⚔️ 15+20 DMG</span>
-          <span>🎯 80 Range</span>
-          <span>⚡ 1.2 Speed</span>
-        </div>
-      </button>
-      <button class="tower-btn" id="moltenSnail">
-  <div style="display: flex; align-items: center; justify-content: space-between;">
-    <div>
-      <strong>🔥 Fire Snail</strong><br>
-      <small>Spits fire, damages & burns enemies</small>
-    </div>
-    <div style="text-align: right;">
-      <div>💰 80 🥬</div>
-    </div>
-  </div>
-  <div class="tower-stats">
-    <span>⚔️ 40 DMG</span>
-    <span>🎯 70 Range</span>
-    <span>⚡ 1.2 Speed</span>
-  </div>
-</button>
-
-      <!-- Removed support button from UI for now, but you can keep it if you want to place support towers -->
-      <button class="tower-btn" id="support">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div>
-            <strong>Money Snail 💰</strong><br>
-            <small>Generates income</small>
-          </div>
-          <div style="text-align: right;">
-            <div>💰 1000 🥬</div>
-          </div>
-        </div>
-        <div class="tower-stats">
-          <span>💸 +10 🥬 / 3 sec</span>
-        </div>
-      </button>
+</div>
 
       <div id="waveInfo">
         <h4>📊 Next Wave Preview:</h4>
