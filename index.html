@@ -311,7 +311,22 @@
   </div>
   <!-- Second column for future towers -->
   <div style="display: flex; flex-direction: column; gap: 10px;">
-    <!-- Future towers go here -->
+    <button class="tower-btn" id="fireworkTower">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <strong>Firework Tower 🎆</strong><br>
+      <small>Explosive damage with stunning effects</small>
+    </div>
+    <div style="text-align: right;">
+      <div>💰 500 🥬</div>
+    </div>
+  </div>
+  <div class="tower-stats">
+    <span>⚔️ 100 DMG</span>
+    <span>🎯 150 Range</span>
+    <span>⚡ 2.0 Speed</span>
+  </div>
+</button>
   </div>
 </div>
 
@@ -432,6 +447,17 @@ const towerTypes = {
   bgColor: '#880000',
   name: 'Sniper Snail',
   effect: 'sniper'
+},
+  firework: {
+  cost: 500,
+  damage: 100,
+  range: 150,
+  speed: 2.0,
+  emoji: '🐌',
+  color: '#FF4500', // orange-red
+  bgColor: '#CC6600',
+  name: 'Firework Tower',
+  effect: 'explosive'
 }
 };
 
@@ -777,15 +803,24 @@ function handleProjectileHit(proj) {
     enemies.forEach(enemy => {
       const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
       if (dist <= radius) {
-        enemy.takeDamage(proj.damage, 'splashBurn');
-        enemy.poisonDamage = 10; // burn damage over time
-        enemy.poisonUntil = performance.now() + 3000;
-        effects.push({ x: enemy.x, y: enemy.y, type: 'burn', life: 60, maxLife: 60 });
+        enemy.takeDamage(proj.damage * 0.6, 'splash');
       }
     });
     effects.push({ x: proj.x, y: proj.y, type: 'explosion', color: '#FFA500', life: 20, maxLife: 20 });
+  } else if (proj.type === 'firework') {
+    // Explosion effect for firework projectile
+    const radius = 80; // explosion radius
+    enemies.forEach(enemy => {
+      const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
+      if (dist <= radius) {
+        // Damage decreases with distance
+        enemy.takeDamage(proj.damage * (1 - dist / radius), 'explosive');
+        // Add explosion particles/visuals
+        effects.push({ x: enemy.x, y: enemy.y, type: 'explosion', color: '#FFA500', life: 20, maxLife: 20 });
+      }
+    });
   } else {
-    // Your existing code:
+    // existing logic for other projectile types
     const killed = proj.target.takeDamage(proj.damage, proj.type);
     switch(proj.type) {
       case 'splash':
@@ -1118,6 +1153,15 @@ function updateUI() {
   });
 }
 
+  document.getElementById('fireworkTower').addEventListener('click', () => {
+  // Deselect other buttons
+  document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected-tower'));
+  // Set the selected type
+  selectedTowerType = 'firework';
+  // Highlight the button
+  document.getElementById('fireworkTower').classList.add('selected-tower');
+});
+  
 // Mouse move for ghost tower preview
 document.getElementById('gameCanvas').addEventListener('mousemove', (e) => {
   const rect = e.target.getBoundingClientRect();
