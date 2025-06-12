@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Flumgus Tower Defense</title>
 <style>
+  /* Your existing CSS styles here (unchanged) */
   body, html {
     margin:0; padding:0; overflow:hidden;
     height: 100vh;
@@ -530,35 +531,35 @@ update(now) {
   shoot(target, now) {
     const towerData = towerTypes[this.type];
     this.target = target;
- if (this.type === 'firework') {
-  // Create a special projectile for explosion
-  projectiles.push({
-    x: this.x,
-    y: this.y,
-    targetX: target.x,
-    targetY: target.y,
-    target: target,
-    damage: towerData.damage + (this.level - 1) * 5,
-    speed: 12, // faster projectile for fireworks
-    type: 'firework', // custom type
-    createdAt: now,
-    tower: this
-  });
-} else {
-  // existing projectile code
-  projectiles.push({
-    x: this.x,
-    y: this.y,
-    targetX: target.x,
-    targetY: target.y,
-    target: target,
-    damage: towerData.damage + (this.level - 1) * 5,
-    speed: 10,
-    type: this.type,
-    createdAt: now,
-    tower: this
-  });
-}
+    if (this.type === 'firework') {
+      // Create a special projectile for explosion
+      projectiles.push({
+        x: this.x,
+        y: this.y,
+        targetX: target.x,
+        targetY: target.y,
+        target: target,
+        damage: towerData.damage + (this.level - 1) * 5,
+        speed: 12, // faster for fireworks
+        type: 'firework', // custom type
+        createdAt: now,
+        tower: this
+      });
+    } else {
+      // existing projectile code
+      projectiles.push({
+        x: this.x,
+        y: this.y,
+        targetX: target.x,
+        targetY: target.y,
+        target: target,
+        damage: towerData.damage + (this.level - 1) * 5,
+        speed: 10,
+        type: this.type,
+        createdAt: now,
+        tower: this
+      });
+    }
     effects.push({ x: this.x, y: this.y, type: 'muzzleFlash', color: towerData.projectileColor, life: 10, maxLife: 10 });
   }
   getSellValue() { return Math.floor(towerTypes[this.type].cost * 0.7 * this.level); }
@@ -793,151 +794,72 @@ class Enemy {
   }
 }
 
-// Update projectiles
+// --- Projectile update ---
 function updateProjectiles(now) {
-  projectiles = projectiles.filter(proj => {
-    const dx = proj.targetX - proj.x;
-    const dy = proj.targetY - proj.y;
-    const distance = Math.hypot(dx, dy);
-    if (distance < proj.speed || now - proj.createdAt > 3000) {
-      if (proj.target && enemies.includes(proj.target)) {
-        handleProjectileHit(proj);
+  for (let i=projectiles.length-1; i>=0; i--) {
+    const p = projectiles[i];
+    const dx = p.targetX - p.x;
+    const dy = p.targetY - p.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < p.speed || Date.now() - p.createdAt > 3000) {
+      // Call explosion for firework
+      if (p.type === 'firework') {
+        handleFireworkExplosion(p);
+      } else if (p.target) {
+        p.target.takeDamage(p.damage);
       }
-      return false;
-    }
-    proj.x += (dx / distance) * proj.speed;
-    proj.y += (dy / distance) * proj.speed;
-    if (proj.target && enemies.includes(proj.target)) {
-      proj.targetX = proj.target.x;
-      proj.targetY = proj.target.y;
-    }
-    return true;
-  });
-}
-function handleProjectileHit(proj) {
-  if (proj.type === 'moltenSnail') {
-    const radius = 40; // splash radius
-    enemies.forEach(enemy => {
-      const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
-      if (dist <= radius) {
-        enemy.takeDamage(proj.damage * 0.6, 'splash');
-      }
-    });
-    effects.push({ x: proj.x, y: proj.y, type: 'explosion', color: '#FFA500', life: 20, maxLife: 20 });
-  } else if (proj.type === 'firework') {
-    // Explosion effect for firework projectile
-    const radius = 80; // explosion radius
-    enemies.forEach(enemy => {
-      const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
-      if (dist <= radius) {
-        // Damage decreases with distance
-        enemy.takeDamage(proj.damage * (1 - dist / radius), 'explosive');
-        // Add explosion particles/visuals
-        effects.push({ x: enemy.x, y: enemy.y, type: 'explosion', color: '#FFA500', life: 20, maxLife: 20 });
-      }
-    });
-  } else {
-    // existing logic for other projectile types
-    const killed = proj.target.takeDamage(proj.damage, proj.type);
-    switch(proj.type) {
-      case 'splash':
-        enemies.forEach(enemy => {
-          if (enemy !== proj.target) {
-            const dist = Math.hypot(enemy.x - proj.target.x, enemy.y - proj.target.y);
-            if (dist <= 60) {
-              enemy.takeDamage(proj.damage * 0.6, 'splash');
-            }
-          }
-        });
-        effects.push({ x: proj.target.x, y: proj.target.y, type: 'explosion', color: '#00ff00', life: 30, maxLife: 30 });
-        break;
-      case 'laser':
-        const pierceTargets = enemies.filter(enemy => {
-          if (enemy === proj.target) return false;
-          const dist = distanceToLine(enemy.x, enemy.y, proj.x, proj.target.x, proj.y, proj.target.y);
-          return dist < 15;
-        });
-        pierceTargets.forEach(enemy => {
-          enemy.takeDamage(proj.damage * 0.8, 'pierce');
-        });
-        break;
-      case 'poison':
-        proj.target.poisonDamage = Math.max(proj.target.poisonDamage, proj.damage * 0.3);
-        proj.target.poisonUntil = performance.now() + 5000;
-        break;
-    }
-    if (killed) {
-      score += proj.target.reward;
-      money += proj.target.reward;
-      kills++;
-      proj.tower.kills++;
-      proj.tower.totalDamage += proj.damage;
-      if (proj.tower.kills >= 10 * proj.tower.level && proj.tower.level < 3) {
-        proj.tower.level++;
-        effects.push({ x: proj.tower.x, y: proj.tower.y, type: 'levelUp', life: 60, maxLife: 60 });
-      }
-      updateUI();
-    }
-  }
-}
-function distanceToLine(px, py, x1, y1, x2, y2) {
-  const A = px - x1;
-  const B = py - y1;
-  const C = x2 - x1;
-  const D = y2 - y1;
-  const dot = A * C + B * D;
-  const lenSq = C * C + D * D;
-  let param = -1;
-  if (lenSq !== 0) param = dot / lenSq;
-  let xx, yy;
-  if (param < 0) {
-    xx = x1;
-    yy = y1;
-  } else if (param > 1) {
-    xx = x2;
-    yy = y2;
-  } else {
-    xx = x1 + param * C;
-    yy = y1 + param * D;
-  }
-  const dx = px - xx;
-  const dy = py - yy;
-  return Math.sqrt(dx * dx + dy * dy);
-}
-// Draw functions
-function drawProjectiles() {
-  projectiles.forEach(proj => {
-    const towerData = towerTypes[proj.type];
-    if (proj.type === 'laser') {
-      ctx.strokeStyle = towerData.projectileColor;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(proj.x, proj.y);
-      ctx.lineTo(proj.targetX, proj.targetY);
-      ctx.stroke();
-      ctx.strokeStyle = towerData.projectileColor + '44';
-      ctx.lineWidth = 6;
-      ctx.stroke();
+      projectiles.splice(i,1);
     } else {
-      ctx.fillStyle = towerData.projectileColor;
-      ctx.beginPath();
-      ctx.arc(proj.x, proj.y, proj.type === 'splash' ? 5 : 4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = towerData.projectileColor + '66';
-      ctx.beginPath();
-      ctx.arc(proj.x, proj.y, proj.type === 'splash' ? 8 : 6, 0, Math.PI * 2);
-      ctx.fill();
+      p.x += (dx / dist) * p.speed;
+      p.y += (dy / dist) * p.speed;
+      // Update target position if enemy still alive
+      if (p.target && enemies.includes(p.target)) {
+        p.targetX = p.target.x;
+        p.targetY = p.target.y;
+      }
+    }
+  }
+}
+
+// --- Explosion handler ---
+function handleFireworkExplosion(proj) {
+  const explosionRadius = 80; // in pixels
+  enemies.forEach(enemy => {
+    const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
+    if (dist <= explosionRadius) {
+      // Damage decreases with distance
+      const damageAmount = proj.damage * (1 - dist / explosionRadius);
+      enemy.takeDamage(damageAmount, 'explosive');
     }
   });
+  // Add explosion visual effect
+  effects.push({ x: proj.x, y: proj.y, type: 'explosion', color: '#FFA500', life: 20, maxLife: 20 });
 }
-function updateParticles() {
-  particles = particles.filter(p => {
-    p.x += p.vx || 0;
-    p.y += p.vy || -1;
-    p.life--;
-    return p.life > 0;
-  });
+
+// --- Draw projectiles ---
+function drawProjectiles() {
+  ctx.lineWidth = 2;
+  for (const p of projectiles) {
+    if (p.type === 'firework') {
+      ctx.strokeStyle = '#FFA500';
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.targetX, p.targetY);
+      ctx.stroke();
+      ctx.fillStyle = '#FFA500';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
 }
+
+// --- Rest of your game loop and functions ---
 function drawParticles() {
   particles.forEach(p => {
     const alpha = p.life / 60;
@@ -946,6 +868,14 @@ function drawParticles() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(p.text, p.x, p.y);
+  });
+}
+function updateParticles() {
+  particles = particles.filter(p => {
+    p.x += p.vx || 0;
+    p.y += p.vy || -1;
+    p.life--;
+    return p.life > 0;
   });
 }
 function updateEffects() {
@@ -959,10 +889,9 @@ function drawEffects() {
     const alpha = e.life / e.maxLife;
     switch(e.type) {
       case 'explosion':
-        const radius = (1 - alpha) * 50;
         ctx.fillStyle = e.color + Math.floor(alpha * 100).toString(16).padStart(2, '0');
         ctx.beginPath();
-        ctx.arc(e.x, e.y, radius, 0, Math.PI * 2);
+        ctx.arc(e.x, e.y, (1 - alpha) * 50, 0, Math.PI * 2);
         ctx.fill();
         break;
       case 'muzzleFlash':
@@ -1024,6 +953,7 @@ function drawPath() {
   ctx.font = '12px bold sans-serif';
   ctx.fillText('LETTUCE FARM', farmX, farmY - 30);
 }
+
 // Ghost tower preview
 function drawGhostTower(x, y) {
   if (!selectedTowerType || sellMode) return;
@@ -1171,7 +1101,6 @@ function updateUI() {
 }
 
 // Mouse move for ghost tower preview
-// Updated to handle correct mouse position considering CSS scaling
 document.getElementById('gameCanvas').addEventListener('mousemove', (e) => {
   const rect = e.target.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
@@ -1331,7 +1260,6 @@ document.getElementById('gameCanvas').addEventListener('click', (e) => {
   const y = (e.clientY - rect.top) * scaleY;
 
   if (sellMode) {
-    // Sell tower
     for (let i = towers.length - 1; i >= 0; i--) {
       const tower = towers[i];
       if (Math.hypot(x - tower.x, y - tower.y) < 25) {
@@ -1420,8 +1348,10 @@ updateWavePreview();
 // Start game loop
 requestAnimationFrame(gameLoop);
 })();
+
+// --- Handle Firework Explosion --- (added at the end)
 function handleFireworkExplosion(proj) {
-  const explosionRadius = 80; // explosion radius in pixels
+  const explosionRadius = 80; // in pixels
   enemies.forEach(enemy => {
     const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
     if (dist <= explosionRadius) {
@@ -1432,7 +1362,7 @@ function handleFireworkExplosion(proj) {
   });
   // Add explosion visual effect
   effects.push({ x: proj.x, y: proj.y, type: 'explosion', color: '#FFA500', life: 20, maxLife: 20 });
-} 
+}
 </script>
 </body>
 </html>
