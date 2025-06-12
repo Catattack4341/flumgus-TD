@@ -312,21 +312,21 @@
   <!-- Second column for future towers -->
   <div style="display: flex; flex-direction: column; gap: 10px;">
     <button class="tower-btn" id="fireworkTower">
-  <div style="display: flex; align-items: center; justify-content: space-between;">
-    <div>
-      <strong>Firework Tower 🎆</strong><br>
-      <small>Explosive damage with stunning effects</small>
-    </div>
-    <div style="text-align: right;">
-      <div>💰 500 🥬</div>
-    </div>
-  </div>
-  <div class="tower-stats">
-    <span>⚔️ 100 DMG</span>
-    <span>🎯 150 Range</span>
-    <span>⚡ 2.0 Speed</span>
-  </div>
-</button>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong>Firework Tower 🎆</strong><br>
+          <small>Explosive damage with stunning effects</small>
+        </div>
+        <div style="text-align: right;">
+          <div>💰 500 🥬</div>
+        </div>
+      </div>
+      <div class="tower-stats">
+        <span>⚔️ 100 DMG</span>
+        <span>🎯 150 Range</span>
+        <span>⚡ 2.0 Speed</span>
+      </div>
+    </button>
   </div>
 </div>
 
@@ -529,19 +529,36 @@ update(now) {
   
   shoot(target, now) {
     const towerData = towerTypes[this.type];
-    const damage = towerData.damage + (this.level - 1) * 5;
-    projectiles.push({
-      x: this.x,
-      y: this.y,
-      targetX: target.x,
-      targetY: target.y,
-      target: target,
-      damage: damage,
-      speed: 10,
-      type: this.type,
-      createdAt: now,
-      tower: this
-    });
+    this.target = target;
+ if (this.type === 'firework') {
+  // Create a special projectile for explosion
+  projectiles.push({
+    x: this.x,
+    y: this.y,
+    targetX: target.x,
+    targetY: target.y,
+    target: target,
+    damage: towerData.damage + (this.level - 1) * 5,
+    speed: 12, // faster projectile for fireworks
+    type: 'firework', // custom type
+    createdAt: now,
+    tower: this
+  });
+} else {
+  // existing projectile code
+  projectiles.push({
+    x: this.x,
+    y: this.y,
+    targetX: target.x,
+    targetY: target.y,
+    target: target,
+    damage: towerData.damage + (this.level - 1) * 5,
+    speed: 10,
+    type: this.type,
+    createdAt: now,
+    tower: this
+  });
+}
     effects.push({ x: this.x, y: this.y, type: 'muzzleFlash', color: towerData.projectileColor, life: 10, maxLife: 10 });
   }
   getSellValue() { return Math.floor(towerTypes[this.type].cost * 0.7 * this.level); }
@@ -1152,12 +1169,15 @@ function updateUI() {
     }
   });
 }
-  
+
 // Mouse move for ghost tower preview
+// Updated to handle correct mouse position considering CSS scaling
 document.getElementById('gameCanvas').addEventListener('mousemove', (e) => {
   const rect = e.target.getBoundingClientRect();
-  mouseX = e.clientX - rect.left;
-  mouseY = e.clientY - rect.top;
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  mouseX = (e.clientX - rect.left) * scaleX;
+  mouseY = (e.clientY - rect.top) * scaleY;
 });
 
 // Main game loop
@@ -1305,8 +1325,11 @@ Object.keys(towerTypes).forEach(type => {
 // Canvas click to place or sell towers
 document.getElementById('gameCanvas').addEventListener('click', (e) => {
   const rect = e.target.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
+
   if (sellMode) {
     // Sell tower
     for (let i = towers.length - 1; i >= 0; i--) {
@@ -1377,27 +1400,39 @@ document.getElementById('moltenSnail').addEventListener('click', () => {
   document.getElementById('moltenSnail').classList.add('selected');
 });
 
-// Initialize UI
-updateUI();
-updateWavePreview();
-  
   document.getElementById('fireworkTower').addEventListener('click', () => {
-  // Deselect all other tower buttons
+  // Unselect other tower buttons
   document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected-tower'));
-  
-  // Toggle selection
-  if (selectedTowerType === 'firework') {
-    selectedTowerType = null;
+  // Toggle firework selection
+  if (selectedTowerType==='firework') {
+    selectedTowerType=null;
     document.getElementById('fireworkTower').classList.remove('selected-tower');
   } else {
-    selectedTowerType = 'firework';
+    selectedTowerType='firework';
     document.getElementById('fireworkTower').classList.add('selected-tower');
   }
 });
+  
+// Initialize UI
+updateUI();
+updateWavePreview();
 
 // Start game loop
 requestAnimationFrame(gameLoop);
 })();
+function handleFireworkExplosion(proj) {
+  const explosionRadius = 80; // explosion radius in pixels
+  enemies.forEach(enemy => {
+    const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
+    if (dist <= explosionRadius) {
+      // Damage decreases with distance
+      const damageAmount = proj.damage * (1 - dist / explosionRadius);
+      enemy.takeDamage(damageAmount, 'explosive');
+    }
+  });
+  // Add explosion visual effect
+  effects.push({ x: proj.x, y: proj.y, type: 'explosion', color: '#FFA500', life: 20, maxLife: 20 });
+} 
 </script>
 </body>
 </html>
