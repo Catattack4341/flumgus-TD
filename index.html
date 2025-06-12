@@ -179,6 +179,23 @@
           <span>⚡ 15 Speed</span>
         </div>
       </button>
+      
+      <button class="tower-btn" id="sniperTower">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <strong>Sniper Snail 🎯</strong><br>
+      <small>High damage, long-range sniper</small>
+    </div>
+    <div style="text-align: right;">
+      <div>💰 3000 🥬</div>
+    </div>
+  </div>
+  <div class="tower-stats">
+    <span>⚔️ 2000 DMG</span>
+    <span>🎯 1000 Range</span>
+    <span>⚡ 10s CD</span>
+  </div>
+</button>
 
       <button class="tower-btn" id="splashTower">
         <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -408,6 +425,17 @@ const towerTypes = {
   bgColor: '#FF8C00', // dark orange
   name: 'Molten Snail',
   effect: 'splashBurn' // custom effect type
+},
+  sniper: {
+  cost: 3000,
+  damage: 2000,
+  range: 1000,
+  speed: 0.1, 
+  emoji: '🐌',
+  color: '#FF0000',
+  bgColor: '#880000',
+  name: 'Sniper Snail',
+  effect: 'sniper'
 }
 };
 
@@ -437,15 +465,19 @@ class Tower {
     this.level = 1;
   }
   
-  update(now) {
-    const towerData = towerTypes[this.type];
+update(now) {
+  const towerData = towerTypes[this.type];
+  if (this.type === 'sniper') {
+    if (now - this.lastShot < 10 * 1000) return;
+  } else {
     if (now - this.lastShot < 1000 / (towerData.speed * this.level * 0.1 + towerData.speed)) return;
-    let target = this.findTarget();
-    if (target) {
-      this.shoot(target, now);
-      this.lastShot = now;
-    }
   }
+  let target = this.findTarget();
+  if (target) {
+    this.shoot(target, now);
+    this.lastShot = now;
+  }
+}
   
   findTarget() {
     const towerData = towerTypes[this.type];
